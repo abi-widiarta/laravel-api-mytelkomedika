@@ -657,10 +657,10 @@ Gejala GERD sering kali muncul setelah makan atau saat berbaring. Gejala tersebu
       
         })
       
-        const API_KEY = "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";
+        const API_KEY = "asd";
       
         const generateResponse = (chatElement) => {
-          const API_URL = "https://api.openai.com/v1/chat/completions";
+          const API_URL = "asd";
       
           // Define the properties and message for the API request
           const requestOptions = {
