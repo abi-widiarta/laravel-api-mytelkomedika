@@ -26,6 +26,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\DoctorScheduleController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,75 +40,75 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 */
 
 // GUEST
-// Route::middleware('guest')->group(function () {
-//     Route::get('/', function () {
-//         return view('landingPage');
-//     });
+Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return view('landingPage');
+    });
     
-//     Route::get('/login', function () {
-//         return view('auth.client_login');
-//     })->name('login');
+    Route::get('/login', function () {
+        return view('auth.client_login');
+    })->name('login');
     
-//     Route::post('/login', [PatientController::class, 'authenticate']);
+    Route::post('/login', [PatientController::class, 'authenticate']);
 
-//     Route::get('/contact', function () {
-//         return "contact page";
-//     });
+    Route::get('/contact', function () {
+        return "contact page";
+    });
     
-//     Route::get('/register', function () {
-//         return view('auth.client_register');
-//     });
+    Route::get('/register', function () {
+        return view('auth.client_register');
+    });
     
-//     Route::post('/register', [PatientController::class, 'store']);
+    Route::post('/register', [PatientController::class, 'store']);
     
-//     Route::get('/admin/register', function () {
-//         return view('auth.admin_register');
-//     });
+    Route::get('/admin/register', function () {
+        return view('auth.admin_register');
+    });
 
-//     Route::post('/admin/register', [RegisterController::class, 'storeAdmin']);
+    Route::post('/admin/register', [RegisterController::class, 'storeAdmin']);
     
-//     Route::get('/admin/login', function () {
-//         return view('auth.admin_login');
-//     });
+    Route::get('/admin/login', function () {
+        return view('auth.admin_login');
+    });
 
-//     Route::get('/dokter/login', function () {
-//         return view('auth.doctor_login');
-//     });
+    Route::get('/dokter/login', function () {
+        return view('auth.doctor_login');
+    });
     
-//     Route::post('/admin/login', [AdminController::class, 'authenticate']);
+    Route::post('/admin/login', [AdminController::class, 'authenticate']);
 
-//     Route::post('/dokter/login', [DoctorController::class, 'authenticate']);
-// });
+    Route::post('/dokter/login', [DoctorController::class, 'authenticate']);
+});
 
 // PASIEN
-// Route::middleware(['auth','verified'])->group(function () {
+Route::middleware(['auth','verified'])->group(function () {
 
-//     Route::get('/dashboard', [PatientController::class, 'dashboard']);
+    Route::get('/dashboard', [PatientController::class, 'dashboard']);
 
-//     Route::get('/lakukan-reservasi', [PatientController::class, 'showDoctors']);
+    Route::get('/lakukan-reservasi', [PatientController::class, 'showDoctors']);
 
-//     Route::get('/lakukan-reservasi/detail/{username}', [PatientController::class, 'showDoctorDetail']);
+    Route::get('/lakukan-reservasi/detail/{username}', [PatientController::class, 'showDoctorDetail']);
 
-//     Route::get('/reservasi-saya', [PatientController::class, 'showReservations']);
+    Route::get('/reservasi-saya', [PatientController::class, 'showReservations']);
     
-//     Route::get('/riwayat-pemeriksaan', [PatientController::class, 'showResults']);
+    Route::get('/riwayat-pemeriksaan', [PatientController::class, 'showResults']);
 
-//     Route::get('/riwayat-pemeriksaan/detail/{id}', [PatientController::class, 'showResultDetail']);
+    Route::get('/riwayat-pemeriksaan/detail/{id}', [PatientController::class, 'showResultDetail']);
 
-//     Route::get('/riwayat-pemeriksaan/detail/pdf/{id}',[PatientController::class, 'showResultDetailPDF'] );
+    Route::get('/riwayat-pemeriksaan/detail/pdf/{id}',[PatientController::class, 'showResultDetailPDF'] );
 
-//     Route::post('/lakukan-reservasi/detail/{id}',  [ReservationController::class, 'store']);
+    Route::post('/lakukan-reservasi/detail/{id}',  [ReservationController::class, 'store']);
     
-//     Route::post('/reservasi-saya/cancel/{id}',  [ReservationController::class, 'cancel']);
+    Route::post('/reservasi-saya/cancel/{id}',  [ReservationController::class, 'cancel']);
 
-//     Route::post('/riwayat-pemeriksaan/detail/review/{id}', [PatientController::class, 'makeReview']);
+    Route::post('/riwayat-pemeriksaan/detail/review/{id}', [PatientController::class, 'makeReview']);
     
-//     Route::post('/logout', [PatientController::class, 'logout']);
+    Route::post('/logout', [PatientController::class, 'logout']);
 
-//     Route::get('/profile', [PatientController::class, 'profileEdit']);
+    Route::get('/profile', [PatientController::class, 'profileEdit']);
 
-//     Route::post('/profile/edit/{id}',  [PatientController::class, 'profileUpdate']);
-// });
+    Route::post('/profile/edit/{id}',  [PatientController::class, 'profileUpdate']);
+});
 
 // ADMIN
 // Route::middleware('auth:admin')->group(function () {
@@ -183,14 +184,20 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 // });
 
 // Dokter
-// Route::middleware('auth:doctor')->group(function () {
-//     Route::get('/dokter/dashboard', [DoctorController::class, 'dashboard']);
-    
-//     Route::get('/dokter/antrian-pemeriksaan', [DoctorController::class, 'showQueues']);
-    
-//     Route::get('/dokter/data-review',[DoctorController::class, 'showReviews'] );
-    
-//     Route::post('/doctor/logout', [DoctorController::class, 'logout']);
+Route::get('/dokter/dashboard', [DoctorController::class, 'dashboard']);
+
+Route::get('/dokter/antrian-pemeriksaan', [DoctorController::class, 'showQueues']);
+
+Route::get('/dokter/data-review',[DoctorController::class, 'showReviews'] );
+
+Route::post('/doctor/logout', [DoctorController::class, 'logout']);
+Route::middleware('auth:doctor')->group(function () {
+});
+
+// Route::get('/doctors', function () {
+//   $response = Http::withToken('7|TIsPVm0U87PXHpumFVSZexaEPQBHw37EZiwu0Qqu6d6c7dd2')->get('http://127.0.0.1:8000/api/dokter/data-review');
+
+//   dd($response->json());
 // });
 
 // Email Verification

@@ -1,7 +1,6 @@
 @extends('layouts.layoutdashboardDoctor')
 
 @section('content')
-
         <div class="flex flex-col h-full">
             <header class="flex items-center justify-between mb-4">
                 <div class="flex items-center justify-start space-x-4">
@@ -11,10 +10,10 @@
                     <button class="relative transition-all duration-100 active:translate-y-1 active:shadow-sm" onclick="toggleDropdown()"> 
                         <div class="flex items-center bg-white p-2 md:space-x-4 md:px-4 shadow-[0px_7px_50px_0px_rgba(0,0,0,0.1)] rounded-xl">
                             <div class="flex items-center justify-center w-8 text-white bg-gray-600 rounded-full aspect-square">
-                                <p class="inline-block">{{  Str::ucfirst(Auth::guard('doctor')->user()->username[0]) }}</p>
+                                <p class="inline-block">{{  Str::ucfirst($user['username'][0]) }}</p>
                             </div>
                             <div class="text-start md:block">
-                                <p class="text-xs">{{ Auth::guard('doctor')->user()->name  }}</p>
+                                <p class="text-xs">{{ $user['name']  }}</p>
                                 <p class="text-xs text-[#777A8F]">Dokter</p>
                             </div>
                         </div>
@@ -27,7 +26,7 @@
                     <div>
                         <h2 class="text-lg font-semibold">Data Review</h2>
                         <div class="flex space-x-2">
-                            <p class="font-medium text-gray-500">Total : {{ Auth::guard('doctor')->user()->rating }}</p>
+                            <p class="font-medium text-gray-500">Total : {{ $user['rating'] }}</p>
                             <img src="/img/star-icon.png" alt="">
                         </div>
                     </div>
@@ -72,29 +71,30 @@
                             @foreach ($reviews as $review)
                                 <tr class="bg-white border-b">
                                     <td class="px-6 py-4">
-                                      {{ ($reviews->currentPage() - 1) * $reviews->perPage() + $loop->iteration }}
+                                        1
+                                      {{-- {{ ($reviews->currentPage() - 1) * $reviews->perPage() + $loop->iteration }} --}}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $review->doctor->name }}
+                                        {{ $user['name'] }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ Str::ucfirst($review->doctor->specialization) }}
+                                        {{ Str::ucfirst($user['specialization']) }}
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        {{ $review->rating }}
+                                        {{ $review['rating'] }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ $review->comment }}
+                                        {{ $review['comment'] }}
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="mt-auto">
+                    {{-- <div class="mt-auto">
                         <div class="w-full mt-10">
                             {{ $reviews->links() }}
                         </div>
-                    </div>
+                    </div> --}}
                 </div>  
             </div>
         </div>

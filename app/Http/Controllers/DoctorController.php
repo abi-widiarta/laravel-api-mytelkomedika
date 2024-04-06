@@ -8,6 +8,8 @@ use App\Models\Review;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class DoctorController extends Controller
@@ -15,6 +17,12 @@ class DoctorController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:doctor');
+    // }
+
     public function index()
     {   
         $doctors = Doctor::query();
@@ -25,51 +33,77 @@ class DoctorController extends Controller
         return view('admin.doctor_data',["doctors" => $doctors->paginate(10)->withQueryString()]);
     }
 
-    public function dashboard(Request $request) {
-        $reservation = Reservation::with('doctor')->whereHas('doctor', function ($subquery) use ($request) {
-            $subquery->where('specialization', $request->poli);
-            })
-            ->when($request->tanggal_reservasi, function ($query) use ($request) {
-                $originalDate = $request->tanggal_reservasi;
-                $carbonDate = Carbon::createFromFormat('m/d/Y', $originalDate);
-                $formattedDate = $carbonDate->format('Y-m-d');
-                $query->where('date', $formattedDate);
-            })
-            ->where('status', '!=', 'canceled') 
-            ->paginate(10);
-    
-        return view('doctor.dashboard',['reservations' => $reservation]);
+    public function dashboard(Request $request)
+    {
+        // dd($request->all());
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
+
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/dokter/dashboard', [
+                'poli' => $request->poli,
+                'tanggal_reservasi' => $request->tanggal_reservasi,
+            ]);
+
+            $reservations = $response->json();
+
+
+            return view('doctor.dashboard', ['reservations' => $reservations['data'],'user' => $user]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }
     }
 
     public function showQueues(Request $request) {
-        $reservation = Reservation::with('doctor')->whereHas('doctor', function ($subquery) use ($request) {
-            $subquery->where('specialization', $request->poli);
-            })
-            ->when($request->tanggal_reservasi, function ($query) use ($request) {
-                $originalDate = $request->tanggal_reservasi;
-                $carbonDate = Carbon::createFromFormat('m/d/Y', $originalDate);
-                $formattedDate = $carbonDate->format('Y-m-d');
-                $query->where('date', $formattedDate);
-            })
-            ->where('status', '!=', 'canceled') 
-            ->paginate(10);
-    
-        return view('doctor.queue',['reservations' => $reservation]);
+        // dd($request->all());
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
+
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/dokter/antrian-pemeriksaan', [
+                'poli' => $request->poli,
+                'tanggal_reservasi' => $request->tanggal_reservasi,
+            ]);
+
+            $reservation = $response->json();
+
+            return view('doctor.queue',['reservations' => $reservation['data'],"user" => $user]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }
     }
 
     public function showReviews(Request $request) {
-        $reviewsQuery = Review::whereHas('doctor', function ($query) {
-            $query->where('id', Auth::guard('doctor')->user()->id);
-        });
-    
-        if ($request->has('rating')) {
-            $rating = $request->rating;
-            $reviewsQuery->where('rating',$rating);
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
+
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/dokter/data-review', [
+                'rating' => $request->rating,
+            ]);
+
+            $reviews = $response->json();
+
+            return view('doctor.review_data',["reviews" => $reviews['data'], "user" => $user]);
+           
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
         }
-    
-        $reviews = $reviewsQuery->paginate(10)->withQueryString();
-    
-        return view('doctor.review_data',["reviews" => $reviews]);
     }
 
 
@@ -202,35 +236,81 @@ class DoctorController extends Controller
 
         return redirect('/admin/data-dokter')->with('success', 'Data berhasil dihapus!');
     }
-
+    
     public function authenticate(Request $request)
-    {
-        $credentials = $request->validate([
-            'username' => 'required|min:3|max:15',
-            'password' => 'required|max:15',
+{
+    $request->validate([
+        'username' => 'required',
+        'password' => 'required',
+    ]);
+
+    try {
+        $response = Http::post('http://127.0.0.1:8000/api/login', [
+            'username' => $request->username,
+            'password' => $request->password,
         ]);
 
-        
-        if (Auth::guard('doctor')->attempt($credentials)) {
-            
-            $request->session()->regenerate();  
-            
-            return redirect('/dokter/dashboard')->with('success','Login berhasil!');
-        }
+        $data = $response->json();
 
-        return back()->withErrors([
-            'username' => 'Username dan password salah',
-        ])->onlyInput('username');
+        // Simpan token dalam session
+        session(['token' => $data['token']]);
+        session(['user' => $data['user']]);
+
+        // dd($data);
+
+        // Redirect ke dashboard dengan menyertakan token dalam session
+        return redirect('/dokter/dashboard');
+    } catch (\Exception $e) {
+        // Jika login gagal, arahkan kembali ke halaman login dengan pesan error
+        throw ValidationException::withMessages([
+            'username' => ['The provided credentials are incorrect.'],
+        ]);
     }
+}
+
+
+    // public function authenticate(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'username' => 'required|min:3|max:15',
+    //         'password' => 'required|max:15',
+    //     ]);
+
+        
+    //     if (Auth::guard('doctor')->attempt($credentials)) {
+            
+    //         $request->session()->regenerate();  
+            
+    //         return redirect('/dokter/dashboard')->with('success','Login berhasil!');
+    //     }
+
+    //     return back()->withErrors([
+    //         'username' => 'Username dan password salah',
+    //     ])->onlyInput('username');
+    // }
 
     public function logout(Request $request)
     {
-        Auth::logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
-
-        return redirect('/dokter/login');
+        $token = $request->session()->get('token');
+        
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/logout');
+            
+            // Periksa apakah respons sukses
+            if ($response->successful()) {
+                // Logout berhasil
+                $request->session()->forget('token');
+                $request->session()->forget('user');
+                return redirect('/dokter/login')->with('success', 'Anda telah berhasil logout');
+            } else {
+                // Tangani jika logout gagal
+                return redirect('/')->with('error', 'Logout gagal: ' . $response->body());
+            }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi kesalahan dalam permintaan HTTP
+            return redirect('/')->with('error', 'Terjadi kesalahan dalam melakukan logout: ' . $e->getMessage());
+        }
     }
 }

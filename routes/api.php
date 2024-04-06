@@ -5,7 +5,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Resources\DoctorResource;
+use App\Http\Controllers\Api\DoctorController;
 use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\Api\PatientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +48,13 @@ Route::post('login', function (Request $request) {
         ]);
     }
 
-    return $user->createToken("token_login")->plainTextToken;
+    $token = $user->createToken("token_login")->plainTextToken;
+
+    // Mengembalikan token sebagai respons
+    return response()->json([
+        'token' => $token,
+        'user' => $user // Jika Anda ingin mengembalikan informasi pengguna lainnya juga
+    ]);
 });
 
 Route::post('logout', function (Request $request) {
@@ -54,3 +62,19 @@ Route::post('logout', function (Request $request) {
     $request->user()->currentAccessToken()->delete();
 
 })->middleware(['auth:sanctum']);
+
+// PATIENT
+
+Route::get('/doctors', [PatientController::class, 'showDoctors']);
+
+// DOCTOR
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/dokter/dashboard', [DoctorController::class, 'dashboard']);
+    
+    Route::get('/dokter/antrian-pemeriksaan', [DoctorController::class, 'showQueues']);
+    
+    Route::get('/dokter/data-review', [DoctorController::class, 'showReviews']);
+    
+    Route::post('/dokter/logout', [DoctorController::class, 'logout']);
+});
