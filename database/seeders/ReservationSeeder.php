@@ -22,7 +22,7 @@ class ReservationSeeder extends Seeder
                 Reservation::create([
                     'patient_id' => $j,
                     'doctor_id' => $i,
-                    'date' => '2023-12-22',
+                    'date' => '2024-01-01',
                     'start_hour' => '07:00:00',
                     'end_hour' => '09:00:00',
                     'status' => 'completed',

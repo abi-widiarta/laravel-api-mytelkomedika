@@ -7,6 +7,7 @@ use App\Models\Doctor;
 use App\Models\ScheduleTime;
 use Illuminate\Http\Request;
 use App\Models\DoctorSchedule;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\StoreDoctorScheduleRequest;
 use App\Http\Requests\UpdateDoctorScheduleRequest;
 
@@ -15,116 +16,120 @@ class DoctorScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-        $schedules =  DoctorSchedule::with('doctor')->paginate(10);
+    public function index(Request $request) {
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
 
-        return view('admin.doctor_schedule', ["schedules" => $schedules]);
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/jadwal-dokter', [
+                'search' => $request->search,
+            ]);
+
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+            return view('admin.doctor_schedule', ["schedules" => $objectData->data]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }      
     }
 
-    public function create() {
-        $categories = ['umum', 'mata', 'gigi'];
-        $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
+    public function create(Request $request) {
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
+        
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/jadwal-dokter/create');
 
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
 
-        $categories = ['umum', 'mata', 'gigi'];
-        $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
-
-        $resultArray = [];
-
-        foreach ($categories as $category) {
-            foreach ($days as $day) {
-                $jam = [];
-
-                for ($i=1; $i <= 5; $i++) { 
-                    $schedule_exist = DoctorSchedule::with('schedule_time')->where('schedule_time_id',$i)->where('day', $day)
-                    ->whereHas('doctor', function ($query) use ($category) {
-                        $query->where('specialization', $category);
-                    })
-                    ->first();
-    
-                    if ($schedule_exist != null) {
-                        $jam_mulai = Carbon::createFromFormat('H:i:s', $schedule_exist->schedule_time->start_hour)->format('H:i');
-                        $jam_selesai = Carbon::createFromFormat('H:i:s', $schedule_exist->schedule_time->end_hour)->format('H:i');
-                        $jam[] = $jam_mulai . "-" . $jam_selesai;
-                    } else {
-                        $jam[] = "-";
-                    }
-                }
-                $resultArray[$category][$day] = $jam;
-            }
-        }
-        return view('admin.doctor_schedule_add', ["doctors"=> Doctor::all(),"schedule_time" => ScheduleTime::all(),"schedule_status" => $resultArray]);
+            return view('admin.doctor_schedule_add', ["doctors"=> $objectData->data->doctors,"schedule_time" => $objectData->data->schedule_time,"schedule_status" => $objectData->data->schedule_status]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'tes']);
+        }      
     }
 
     public function store(Request $request) {
-        if(DoctorSchedule::where('schedule_time_id', $request->schedule_time_id)
-                ->where('day', $request->hari)
-                ->whereHas('doctor', function ($query) use ($request) {
-                    $query->where('specialization', Doctor::find($request->dokter)->specialization);
-                })
-                ->first()
-                
-                
-            != null) {
-                return redirect()->back()->withToastError('Jadwal sudah terisi');
-            };
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-            // dd($request);
-
-            DoctorSchedule::create([
-                "doctor_id" => $request->dokter,
-                "schedule_time_id" => $request->schedule_time_id,
-                "day" => $request->hari,
-                "end_date" => $request->tanggal_berlaku_sampai,
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/jadwal-dokter/store', [
+                'dokter' => $request->dokter,
+                'schedule_time_id' => $request->schedule_time_id,
+                'hari' => $request->hari,
+                'max_patient' => 30,
+                'end_date' => $request->tanggal_berlaku_sampai,
             ]);
 
-        return redirect()->back()->with('success','Data added successfully!');
-    }
-
-    public function edit($id) {
-        $categories = ['umum', 'mata', 'gigi'];
-        $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
-
-
-        $categories = ['umum', 'mata', 'gigi'];
-        $days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
-
-        $resultArray = [];
-
-        foreach ($categories as $category) {
-            foreach ($days as $day) {
-                $jam = [];
-
-                for ($i=1; $i <= 5; $i++) { 
-                    $schedule_exist = DoctorSchedule::with('schedule_time')->where('schedule_time_id',$i)->where('day', $day)
-                    ->whereHas('doctor', function ($query) use ($category) {
-                        $query->where('specialization', $category);
-                    })
-                    ->first();
-    
-                    if ($schedule_exist != null) {
-                        $jam_mulai = Carbon::createFromFormat('H:i:s', $schedule_exist->schedule_time->start_hour)->format('H:i');
-                        $jam_selesai = Carbon::createFromFormat('H:i:s', $schedule_exist->schedule_time->end_hour)->format('H:i');
-                        $jam[] = $jam_mulai . "-" . $jam_selesai;
-                    } else {
-                        $jam[] = "-";
-                    }
-                }
-                $resultArray[$category][$day] = $jam;
+            if ($response->successful()) {
+                return redirect()->back()->with('success', $response['message']);
+            } else {
+                return redirect()->back()->withErrors(['error' => $response['message']]);
             }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $response['message']]);
         }
-        return view('admin.doctor_schedule_edit', ["schedule"=> DoctorSchedule::findOrFail($id),"schedule_time" => ScheduleTime::all(),"schedule_status" => $resultArray]);
     }
 
-    public function update(Request $request, $id) {
-        // dd($request);
-        $schedule = DoctorSchedule::findOrFail($id);
+    public function edit(Request $request) {
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        $schedule->update([
-            "schedule_time_id" => $request->schedule_time_id,
-            "day" => $request->hari,
-            "end_date" => $request->tanggal_berlaku_sampai,
-        ]);
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/jadwal-dokter/edit', [
+                'id' => $request->id,
+            ]);
+
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+            return view('admin.doctor_schedule_edit', ["schedule"=> $objectData->data->schedule,"schedule_time" => $objectData->data->schedule_time,"schedule_status" => $objectData->data->schedule_status]);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $response['message']]);
+        }
+    }
+
+    public function update(Request $request) {
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/jadwal-dokter/update', [
+                'dokter' => $request->dokter,
+                'id' => $request->id,
+                'schedule_time_id' => $request->schedule_time_id,
+                'hari' => $request->hari,
+                'tanggal_berlaku_sampai' => $request->tanggal_berlaku_sampai,
+            ]);
+
+            if ($response->successful()) {
+                return redirect()->back()->with('success', $response['message']);
+            } else {
+                return redirect()->back()->withErrors(['error' => $response['message']]);
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => "Gagal update jadwal dokter"]);
+        }
 
         return redirect('/admin/jadwal-dokter/edit/' . $id)->with('success','Jadwal dokter berhasil diupdate!');
     }

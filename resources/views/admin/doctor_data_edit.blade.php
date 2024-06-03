@@ -21,7 +21,7 @@
               </a>
                 <h2 class="mb-8 text-lg font-semibold text-center">Edit Data Dokter</h2>
                 <div class="flex w-full">
-                  <form enctype="multipart/form-data" id="add-form" action="/admin/data-dokter/update/{{ $doctor->username }}" class="flex flex-col items-center w-full bg-gray" method="POST">
+                  <form enctype="multipart/form-data" id="add-form" action="/admin/data-dokter/update?current_username={{ $doctor->username }}" class="flex flex-col items-center w-full bg-gray" method="POST">
                     @csrf
                     <div class="flex space-x-8 w-[80%] mb-4">
                       <div class="w-full">

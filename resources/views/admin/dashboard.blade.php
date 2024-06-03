@@ -1,9 +1,6 @@
 @extends('layouts.layoutDashboardAdmin')
 
 @section('content')
-        {{-- @if(session('success'))
-            @include('partials.modalLoginSuccess')
-        @endif --}}
         <div class="h-full">
             <header class="flex items-center justify-between mb-4">
                 <div class="flex items-center justify-start space-x-4">
@@ -99,10 +96,10 @@
                     </div>
                     
                     <div class="flex flex-col w-full h-full gap-6 p-6 pb-8 bg-white rounded-xl">
-                        <h2 class="font-semibold">Menunggu Laporan Pemeriksaan ({{ $menunggu_laporan->count() }})</h2>
+                        <h2 class="font-semibold">Menunggu Laporan Pemeriksaan ({{ count($menunggu_pembayaran) }})</h2>
                         <div class="relative overflow-x-auto">
 
-                            @if ($menunggu_laporan->count() == 0)
+                            @if ($menunggu_laporan == [])
                                 <p class="text-sm font-medium text-center text-gray-500">Tidak ada data</p>
                             @else
                                 <table class="w-full text-sm text-left text-gray-500 rtl:text-right">
@@ -146,8 +143,8 @@
                     </div>
 
                     <div class="flex flex-col w-full h-full gap-6 p-6 pb-8 bg-white rounded-xl">
-                        <h2 class="font-semibold">Menunggu Pembayaran ({{ $menunggu_pembayaran->count() }})</h2>
-                        @if ($menunggu_pembayaran->count() == 0)
+                        <h2 class="font-semibold">Menunggu Pembayaran ({{ count($menunggu_pembayaran) }})</h2>
+                        @if ($menunggu_pembayaran == [])
                             <p class="text-sm font-medium text-center text-gray-500">Tidak ada data</p>
                         @else
                             <table class="w-full text-sm text-left text-gray-500 rtl:text-right">
@@ -184,7 +181,7 @@
                                                 {{  Str::ucfirst($pembayaran->reservation->doctor->specialization) }}
                                             </td>
                                             <td class="px-6 py-4 ">
-                                                {{ $pembayaran->reservation->tanggal }}
+                                                {{ $pembayaran->reservation->date }}
                                             </td>
                                         </tr>
                                     @endforeach

@@ -56,7 +56,7 @@
                             @foreach ($schedules as $schedule)
                                 <tr class="bg-white border-b">
                                     <td scope="row" class="py-4 pl-4 pr-6">
-                                        {{ ($schedules->currentPage() - 1) * $schedules->perPage() + $loop->iteration }}
+                                        1
                                     </td>
                                     <td scope="row" class="px-6 py-4">
                                         {{ $schedule->doctor->name }}
@@ -76,7 +76,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center space-x-2">
                                             <a
-                                                href="/admin/jadwal-dokter/edit/{{ $schedule->id }}"
+                                                href="/admin/jadwal-dokter/edit?id={{ $schedule->id }}"
                                                 class="grid w-8 bg-gray-400 rounded-md place-items-center aspect-square hover:bg-gray-500">
                                                 <img src="/img/edit-icon.png" alt="edit-icon" />
                                             </a>
@@ -93,11 +93,11 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="mt-auto">
+                {{-- <div class="mt-auto">
                     <div class="w-full mt-10">
                         {{ $schedules->links() }}
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
 

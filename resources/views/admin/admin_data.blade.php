@@ -47,7 +47,7 @@
                             @foreach ($admins as $admin)
                                 <tr class="bg-white border-b">
                                     <td scope="row" class="py-4 pl-4 pr-6">
-                                        {{ ($admins->currentPage() - 1) * $admins->perPage() + $loop->iteration }}
+                                        1
                                     </td>
                                     <td scope="row" class="px-6 py-4">
                                         {{ $admin->username }}
@@ -58,11 +58,11 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center space-x-2">
                                             <a  
-                                                href="/admin/data-admin/edit/{{ $admin->id }}"
+                                                href="/admin/data-admin/edit?id={{ $admin->id }}"
                                                 class="grid w-8 bg-gray-400 rounded-md place-items-center aspect-square hover:bg-gray-500">
                                                 <img src="/img/edit-icon.png" alt="edit-icon" />
                                             </a>
-                                            <form class="doctor-delete-form" action="/admin/data-admin/delete/{{ $admin->id }}" method="POST">
+                                            <form class="doctor-delete-form" action="/admin/data-admin/delete?id={{ $admin->id }}" method="POST">
                                                 @csrf
                                                 <button type="submit" class="grid w-8 bg-red-500 rounded-md place-items-center aspect-square hover:bg-red-600">
                                                     <img src="/img/delete-icon.png" alt="delete-icon" />
@@ -75,11 +75,11 @@
                             
                         </tbody>
                     </table>
-                    <div class="mt-auto">
+                    {{-- <div class="mt-auto">
                         <div class="w-full mt-10">
                             {{ $admins->links() }}
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

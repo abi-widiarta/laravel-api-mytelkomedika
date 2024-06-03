@@ -23,19 +23,33 @@ class DoctorController extends Controller
     //     $this->middleware('auth:doctor');
     // }
 
-    public function index()
+    public function index(Request $request)
     {   
-        $doctors = Doctor::query();
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
 
-        if (request('search')) {
-            $doctors->where('name', 'like', '%' . request('search') . '%')->orWhere('specialization', 'like', '%' . request('search') . '%');
-        }
-        return view('admin.doctor_data',["doctors" => $doctors->paginate(10)->withQueryString()]);
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/data-dokter', [
+                'search' => $request->search,
+            ]);
+
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+            return view('admin.doctor_data',["doctors" => $objectData->data]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }        
     }
 
     public function dashboard(Request $request)
     {
-        // dd($request->all());
+
         try {
             // Mengambil token dari session atau dari tempat penyimpanan lainnya
             $token = $request->session()->get('token');
@@ -51,6 +65,7 @@ class DoctorController extends Controller
 
             $reservations = $response->json();
 
+            // dd(auth('sanctum')->user());
 
             return view('doctor.dashboard', ['reservations' => $reservations['data'],'user' => $user]);
         } catch (\Exception $e) {
@@ -121,152 +136,142 @@ class DoctorController extends Controller
     public function store(Request $request)
     {
 
-        $request->validate([
-            'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:doctors,email|max:100',
-            'username' => 'required|string|unique:doctors,username|max:30',
-            'password' => 'max:15|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-            'poli' => 'required',
-            'status' => 'required',
-            'no_str' => 'required|string|max:100',
-            'no_hp' => 'required|numeric',
-            'jenis_kelamin' => 'required',
-            'tanggal_lahir' => 'required|date',
-            'alamat' => 'required|string|max:100',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-
-        $imageExtension = $request->file('image')->getClientOriginalExtension();
-        $image_path = $request->file('image')->storeAs('img', $request->username . "." . $imageExtension,['disk' => 'public']);
-        
-
-        Doctor::create([
-            "name" => $request->name,
-            "email" => $request->email,
-            "username" => $request->username,
-            "password" => bcrypt($request->password),
-            "specialization" => $request->poli,
-            "status" => $request->status,
-            "registration_number" => $request->no_str,
-            "phone" => $request->no_hp,
-            "gender" => $request->jenis_kelamin,
-            "birthdate" => $request->tanggal_lahir,
-            "address" => $request->alamat,
-            "image" => "/uploads/" . $image_path,
-        ]);
-
-        return redirect('/admin/data-dokter')->with('success','Data berhasi dibuat!');
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/data-dokter/store', [
+                'image' => $request->image,
+                'name' => $request->name,
+                'email' => $request->email,
+                'username' => $request->username,
+                'password' => $request->password,
+                'poli' => $request->poli,
+                'status' => $request->status,
+                'no_str' => $request->no_str,
+                'no_hp' => $request->no_hp,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'alamat' => $request->alamat,
+            ]);
+            
+            return redirect('/admin/data-dokter')->with('success','Data berhasi dibuat!');
+        } catch (\Exception $e) {
+            return redirect('/admin/data-dokter')->withErrors(['error' => $response['message']]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Doctor $doctor)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($username)
+    public function edit(Request $request)
     {
         try {
-            $doctor = Doctor::where('username',$username)->firstOrFail();
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-            return view('admin.doctor_data_edit',["doctor" => $doctor]);
-        } catch (ModelNotFoundException $exception) {
-            return view("client.notFound",["exception" => $exception]);
-        }
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/data-dokter/edit', [
+                'username' => $request->username,
+            ]);
+
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+            return view('admin.doctor_data_edit',["doctor" => $objectData->data]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }        
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $username)
+    public function update(Request $request)
     {   
-        $doctor = Doctor::where('username',$username)->firstOrFail();
-        $initialPassword = $doctor->password;
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        
-        if($request->file('image') != null) {
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/data-dokter/update', [
+                'current_username' => $request->current_username,
+                'image' => $request->image,
+                'name' => $request->name,
+                'email' => $request->email,
+                'username' => $request->username,
+                'password' => $request->password,
+                'poli' => $request->poli,
+                'status' => $request->status,
+                'no_str' => $request->no_str,
+                'no_hp' => $request->no_hp,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'alamat' => $request->alamat,
+            ]);
+
             
-            $imageExtension = $request->file('image')->getClientOriginalExtension();
-            $image_path = $request->file('image')->storeAs('img', $request->username . "." . $imageExtension,['disk' => 'public']);
-
-            $doctor->update([
-                "name" => $request->name,
-                "email" => $request->email,
-                "username" => $request->username,
-                "specialization" => $request->poli,
-                "status" => $request->status,
-                "registration_number" => $request->no_str,
-                "phone" => $request->no_hp,
-                "gender" => $request->jenis_kelamin,
-                "birthdate" => $request->tanggal_lahir,
-                "address" => $request->alamat,
-                "password" => $request->password == null ? $initialPassword : bcrypt($request->password),
-                "image" => "/uploads/" . $image_path,
-            ]);
-        } else {
-            $doctor->update([
-                "name" => $request->name,
-                "email" => $request->email,
-                "username" => $request->username,
-                "specialization" => $request->poli,
-                "status" => $request->status,
-                "registration_number" => $request->no_str,
-                "phone" => $request->no_hp,
-                "gender" => $request->jenis_kelamin,
-                "birthdate" => $request->tanggal_lahir,
-                "address" => $request->alamat,
-                "password" => $request->password == null ? $initialPassword : bcrypt($request->password),
-            ]);
+            return redirect('/admin/data-dokter')->with('success',$response['message']);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => "ads"]);
         }
-        return redirect('/admin/data-dokter/edit/' . $request->username)->with('success','Data berhasil diupdate!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        Doctor::where('id', $id)->delete();
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        return redirect('/admin/data-dokter')->with('success', 'Data berhasil dihapus!');
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/data-dokter/delete', [
+                'id' => $request->id,
+            ]);
+
+            
+            return redirect('/admin/data-dokter')->with('success', 'Data berhasil dihapus!');
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => "ads"]);
+        }
     }
     
     public function authenticate(Request $request)
-{
-    $request->validate([
-        'username' => 'required',
-        'password' => 'required',
-    ]);
-
-    try {
-        $response = Http::post('http://127.0.0.1:8000/api/login', [
-            'username' => $request->username,
-            'password' => $request->password,
+    {
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required',
         ]);
 
-        $data = $response->json();
+        try {
+            $response = Http::post('http://127.0.0.1:8000/api/dokter/login', [
+                'username' => $request->username,
+                'password' => $request->password,
+            ]);
 
-        // Simpan token dalam session
-        session(['token' => $data['token']]);
-        session(['user' => $data['user']]);
+            $data = $response->json();
 
-        // dd($data);
+            // Simpan token dalam session
+            session(['token' => $data['token']]);
+            session(['user' => $data['user']]);
 
-        // Redirect ke dashboard dengan menyertakan token dalam session
-        return redirect('/dokter/dashboard');
-    } catch (\Exception $e) {
-        // Jika login gagal, arahkan kembali ke halaman login dengan pesan error
-        throw ValidationException::withMessages([
-            'username' => ['The provided credentials are incorrect.'],
-        ]);
+            // dd($data);
+
+            // Redirect ke dashboard dengan menyertakan token dalam session
+            return redirect('/dokter/dashboard');
+        } catch (\Exception $e) {
+            // Jika login gagal, arahkan kembali ke halaman login dengan pesan error
+            throw ValidationException::withMessages([
+                'username' => ['The provided credentials are incorrect.'],
+            ]);
+        }
     }
-}
 
 
     // public function authenticate(Request $request)

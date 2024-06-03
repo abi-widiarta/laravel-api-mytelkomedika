@@ -1,6 +1,7 @@
 @extends('layouts.layoutDashboardAdmin')
 
 @section('content')
+
         <div class="flex flex-col h-full">
             <header class="flex items-center justify-between mb-4">
                 <div class="flex items-start justify-start space-x-4">
@@ -31,7 +32,7 @@
                 </div>
                 <div class="flex flex-col justify-between flex-1">
 
-                    @if ($doctors->count() == 0)
+                    @if (count($doctors) == 0)
                         <p class="text-sm font-medium text-center text-gray-500">Tidak ada data</p>
                     @else    
                         <table class="w-full text-sm text-left text-gray-500 rtl:text-right">
@@ -70,7 +71,7 @@
                                 @foreach ($doctors as $doctor)
                                     <tr class="bg-white border-b">
                                         <td scope="row" class="py-4 pl-4 pr-6">
-                                            {{ ($doctors->currentPage() - 1) * $doctors->perPage() + $loop->iteration }}
+                                            1
                                         </td>
                                         <td scope="row" class="py-4 pl-2 pr-6">
                                             {{ $doctor->name }}
@@ -96,11 +97,11 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center justify-center space-x-2">
                                                 <a  
-                                                    href="/admin/data-dokter/edit/{{ $doctor->username }}"
+                                                    href="/admin/data-dokter/edit?username={{ $doctor->username }}"
                                                     class="grid w-8 bg-gray-400 rounded-md place-items-center aspect-square hover:bg-gray-500">
                                                     <img src="/img/edit-icon.png" alt="edit-icon" />
                                                 </a>
-                                                <form class="doctor-delete-form" action="/admin/data-doctor/delete/{{ $doctor->id }}" method="POST">
+                                                <form class="doctor-delete-form" action="/admin/data-doctor/delete?id={{ $doctor->id }}" method="POST">
                                                     @csrf
                                                     <button type="submit" class="grid w-8 bg-red-500 rounded-md place-items-center aspect-square hover:bg-red-600">
                                                         <img src="/img/delete-icon.png" alt="delete-icon" />
@@ -114,12 +115,12 @@
                             </tbody>
                         </table>
                     @endif
-
+{{-- 
                     <div class="mt-auto">
                         <div class="w-full mt-10">
                             {{ $doctors->links() }}
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

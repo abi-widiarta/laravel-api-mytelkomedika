@@ -43,9 +43,9 @@ class PatientSeeder extends Seeder
                 'gender' => ['L', 'P'][array_rand(['L', 'P'])],
                 'address' => "Jl. Telekomunikasi",
                 "phone" => "082237910255",
-                "birthdate" => $faker->date($format = 'Y-m-d', $max = '2002-01-01'),
+                'birthdate' => $faker->date($format = 'Y-m-d', $max = '2003-01-01'),
                 'student_id' => '130121' . $faker->randomNumber(4),
-                'email_verified_at' => $faker->dateTimeThisMonth('2023-12-11 02:51:12'),
+                'email_verified_at' => $faker->dateTimeThisMonth('now', 'Asia/Jakarta'),
             ];
         }
         

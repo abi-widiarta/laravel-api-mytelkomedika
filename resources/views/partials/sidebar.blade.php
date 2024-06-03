@@ -49,15 +49,6 @@
                   </li>
                   <li><p class="mt-6 mb-2 ml-2 text-sm font-semibold text-[#151C48]/80">Account</p></li>
                   <li>
-                      <a class="{{ Request::is('profile*') ? 'bg-gradient-to-r from-[#ED1C24]/90 via-[#ED1C24]/95 to-[#ED1C24]/60 shadow-[0px_10px_20px_-8px_#ee1c2536] text-white' : 'text-[#151C48] hover:bg-gray-400/10' }}  flex items-center justify-start px-4 py-4 space-x-3 transition duration-150 rounded-xl hover:bg-gray-100 hover:transition "
-                          href="/profile">
-                          <img class="{{ Request::is('profile*') ? 'invert' : ''}} w-5 aspect-square z-10" src="/img/profile-icon.png" alt="logo" />
-                          <p class="z-10 text-sm" class="font-medium">
-                              Profile
-                          </p>
-                      </a>
-                  </li>
-                  <li>
                     <form class="form-logout" action="/logout" method="POST">
                         @csrf
                         <button type="submit" class="flex items-center justify-start w-full px-4 py-4 space-x-3 transition duration-150 rounded-xl hover:bg-gray-100 hover:transition">

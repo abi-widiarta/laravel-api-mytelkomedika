@@ -1,11 +1,9 @@
 <button class="relative transition-all duration-100 active:translate-y-1 active:shadow-sm" onclick="toggleDropdown()"> 
   <div class="flex items-center bg-white p-2 md:space-x-4 md:px-4 shadow-[0px_7px_50px_0px_rgba(0,0,0,0.1)] rounded-xl">
       <div class="flex items-center justify-center w-8 text-white bg-gray-600 rounded-full aspect-square">
-          <p class="inline-block">{{ Auth::user()->username[0] }}</p>
       </div>
       <div class="text-start md:block">
-          <p class="text-xs">{{ Auth::user()->name ?? Auth::guard('admin')->user()->username  }}</p>
-          <p class="text-xs text-[#777A8F]">{{ Auth::guard('web')->check() ? 'Student' : 'Admin' }}</p>
+          <p class="text-xs">User</p>
       </div>
   </div>
 </button>
@@ -18,9 +16,7 @@
       <p >Profile</p>
   </a>
 </div>
-
-
-<script>
+{{-- <script>
   // Fungsi untuk menutup dropdown jika di-klik di luar dropdown
   function closeDropdownOnClickOutside(event) {
       const dropdownMenu = document.querySelector("#dropdown-menu");
@@ -54,4 +50,4 @@
           }, 300);
       }
   }
-  </script>
+</script> --}}

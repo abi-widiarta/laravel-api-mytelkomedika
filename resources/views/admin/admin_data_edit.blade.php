@@ -21,7 +21,7 @@
               </a>
               <h2 class="mb-6 text-lg font-semibold text-center">Edit Data Admin</h2>
               <div class="flex w-full">
-                <form id="add-form" action="/admin/data-admin/edit/{{ $admin->id }}" class="flex flex-col items-center w-full bg-gray" method="POST">
+                <form id="add-form" action="/admin/data-admin/edit?id={{ $admin->id }}" class="flex flex-col items-center w-full bg-gray" method="POST">
                   @csrf
                   <div class="flex flex-col items-center space-x-8 w-[40%] mb-4">
                     <div class="w-full">

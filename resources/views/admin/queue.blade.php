@@ -117,7 +117,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center space-x-2">
-                                            <form class="flex space-x-2" action="/admin/antrian-pemeriksaan/complete/{{ $reservation->id }}" method="post">
+                                            <form class="flex space-x-2" action="/admin/antrian-pemeriksaan/complete?id={{ $reservation->id }}" method="post">
                                                 @csrf
                                                 <button
                                                     {{  $reservation->status == 'completed' ? 'disabled' : '' }}
@@ -127,7 +127,7 @@
                                                 </button>
                                                 <a
                                                     
-                                                    href="/admin/antrian-pemeriksaan/hasil-pemeriksaan/{{ $reservation->id }}"
+                                                    href="/admin/antrian-pemeriksaan/hasil-pemeriksaan?id={{ $reservation->id }}"
                                                     class="{{  $reservation->status != 'completed' ? 'pointer-events-none opacity-40' : '' }} grid w-8 transition-all duration-150 rounded-md place-items-center aspect-square hover:opacity-70">
                                                     <img src="/img/buat-laporan.png" alt="delete-icon" />
                                                 </a>
@@ -139,11 +139,11 @@
                             
                         </tbody>
                     </table>
-                    <div class="mt-auto">
+                    {{-- <div class="mt-auto">
                         <div class="w-full mt-10">
                             {{ $reservations->links() }}
                         </div>
-                    </div>
+                    </div> --}}
                 </div>  
             </div>
         </div>

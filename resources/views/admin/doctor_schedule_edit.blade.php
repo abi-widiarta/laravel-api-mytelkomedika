@@ -23,7 +23,7 @@
                   <div>
                     <h2 class="mb-8 text-lg font-semibold text-center">Edit Jadwal Dokter</h2>
                     <div class="flex w-full">
-                      <form enctype="multipart/form-data" id="add-form" action="/admin/jadwal-dokter/update/{{ $schedule->id }}" class="flex flex-col items-center w-full bg-gray" method="POST">
+                      <form enctype="multipart/form-data" id="add-form" action="/admin/jadwal-dokter/update?id={{ $schedule->id }}&dokter={{ $schedule->doctor->id }}" class="flex flex-col items-center w-full bg-gray" method="POST">
                         @csrf
                         <div class="flex space-x-8 w-[37%] mb-4">
                           <div class="w-full">
@@ -84,7 +84,7 @@
                                   type="date"
                                   id="tanggal_berlaku_sampai"
                                   name="tanggal_berlaku_sampai"
-                                  value="{{ $schedule->tanggal_berlaku_sampai }}"
+                                  value="{{ $schedule->end_date }}"
                                   class="bg-white disabled:bg-slate-100 disabled:text-gray-500 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-primary/50"
                                   required
                               />
@@ -93,7 +93,7 @@
                         </div>
                         <button id="btn-tambah" type="submit"
                             class="text-white rounded-full bg-[#ED1C24] font-medium shadow-lg transition duration-200 hover:shadow-[#ED1C24]/50 shadow-[#ED1C24]/30 text-sm w-80 px-6 py-2.5 text-center active:opacity-50 active:translate-y-2 active:shadow-sm">
-                            Edit
+                            Update
                         </button>
                       </form>
                     </div>

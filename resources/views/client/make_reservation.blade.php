@@ -1,6 +1,7 @@
 @extends('layouts.layoutdashboard')
 
 @section('content')
+{{-- @dd($data) --}}
         <div class="flex flex-col h-full">
             <header class="flex items-center justify-between mb-4">
                 <div class="flex items-center justify-start space-x-4">
@@ -41,53 +42,53 @@
 
             <div class="grid grid-cols-2 gap-6">
                 
-                @foreach ($doctors as $doctor)
-                    <div onclick="location.href='/lakukan-reservasi/detail/{{ $doctor->username }}';" class="flex justify-start py-6 pl-6 pr-10 space-x-4 transition-all duration-150 bg-white shadow-lg hover:cursor-pointer hover:pointer hover:-translate-y-1 rounded-xl shadow-gray-100">
+                @foreach ($data as $doctor)
+                    <div onclick="location.href='/lakukan-reservasi/detail?username={{ $doctor['username'] }}';" class="flex justify-start py-6 pl-6 pr-10 space-x-4 transition-all duration-150 bg-white shadow-lg hover:cursor-pointer hover:pointer hover:-translate-y-1 rounded-xl shadow-gray-100">
                         <div class="space-y-2 text-center">
-                            <img class="object-cover h-56 rounded-lg w-44" src="{{ $doctor->image}}" alt="doctor-1" />
+                            <img class="object-cover h-56 rounded-lg w-44" src="{{ $doctor['image']}}" alt="doctor-1" />
                         </div>
                         <span class="block w-[2px] bg-gray-200"></span>
 
                         <div class="flex flex-col justify-start flex-1">
-                            <h1 class="mb-2 text-lg font-semibold">{{ $doctor->name }}</h1>
+                            <h1 class="mb-2 text-lg font-semibold">{{ $doctor['name'] }}</h1>
                             <div class="flex flex-col mb-4 space-y-2">
                                 <div class="flex items-center space-x-2">
                                     <div class="flex justify-center items-center w-7 rounded-full aspect-square bg-[#DCFCE7]">
                                         <img src="/img/poli-green.png" alt="">
                                     </div>
-                                    <p class="text-sm font-medium text-gray-500">Poli {{ Str::ucfirst($doctor->specialization) }}</p>
+                                    <p class="text-sm font-medium text-gray-500">Poli {{ Str::ucfirst($doctor['specialization']) }}</p>
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     <div class="flex justify-center items-center w-7 rounded-full aspect-square bg-[#DCFCE7]">
                                         <img src="/img/patient-green.png" alt="">
                                     </div>
-                                    @if ($doctor->patient_total == 0)
+                                    @if ($doctor['patient_total'] == 0)
                                         <p class="text-sm font-medium text-gray-500">Baru ✨</p>
                                     @else
-                                        <p class="text-sm font-medium text-gray-500">{{ $doctor->patient_total }} patients</p>
+                                        <p class="text-sm font-medium text-gray-500">{{ $doctor['patient_total'] }} patients</p>
                                     @endif
                                 </div>
                                 <div class="flex items-center space-x-2">
                                     <div class="flex justify-center items-center w-7 rounded-full aspect-square bg-[#DCFCE7]">
                                         <img src="/img/review-green.png" alt="">
                                     </div>
-                                    @if ($doctor->review_total == 0)
+                                    @if ($doctor['review_total'] == 0)
                                         <p class="text-sm font-medium text-gray-500">Baru ✨</p>
                                     @else
-                                        <p class="text-sm font-medium text-gray-500">{{ $doctor->review_total }} review</p>
+                                        <p class="text-sm font-medium text-gray-500">{{ $doctor['review_total'] }} review</p>
                                     @endif
                                 </div>
                             </div>
                             <div class="flex items-center mb-4 space-x-1">
-                                @if ( $doctor->rating == 0)
+                                @if ( $doctor['rating'] == 0)
                                     <p class="text-sm font-semibold">Rating : <span class="font-normal">Baru ✨</span></p>
                                 @else
-                                    <p class="text-sm font-semibold">Rating : {{ $doctor->rating }}</p>
+                                    <p class="text-sm font-semibold">Rating : {{ $doctor['rating'] }}</p>
                                     <img src="/img/star-icon.png" alt="">
                                 @endif
                             </div>
                             <div class="flex justify-start w-full ">
-                                <a href="/lakukan-reservasi/detail/{{ $doctor->username }}" class="py-2.5 text-sm text-white px-12 shadow-lg bg-gradient-to-r from-[#ED1C24]/90 to-[#ED1C24]/50 rounded-lg transition duration-200 hover:bg-[#ED1C24]">
+                                <a href="/lakukan-reservasi/detail?username={{ $doctor['username'] }}" class="py-2.5 text-sm text-white px-12 shadow-lg bg-gradient-to-r from-[#ED1C24]/90 to-[#ED1C24]/50 rounded-lg transition duration-200 hover:bg-[#ED1C24]">
                                     Detail
                                 </a>
                             </div>
@@ -95,9 +96,9 @@
                     </div>
                 @endforeach
             </div>
-            <div class="w-full mt-10">
+            {{-- <div class="w-full mt-10">
                 {{ $doctors->links() }}
-            </div>
+            </div> --}}
         </div>
 
         <script defer>

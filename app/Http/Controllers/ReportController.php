@@ -5,88 +5,75 @@ namespace App\Http\Controllers;
 use App\Models\Report;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class ReportController extends Controller
 {
-    public function store(Request $request,$id) {
+    public function store(Request $request) {
+        // dd($request);
 
-        $request->validate([
-            'berat_badan' => 'required|numeric|max:500',
-            'tinggi_badan' => 'required|numeric|min:32|max:250',
-            'suhu_badan' => 'required|numeric|min:32|max:42',
-            'keluhan' => 'required|string',
-            'diagnosa' => 'required|string',
-            'anjuran' => 'required|string',
-            'obat' => 'required|string',
-        ]);
-        
-        $biaya = $request->biaya;
-        $status = 0;
-        
-        if($request->biaya == null || $request->biaya == '0') {
-            $biaya = "0";
-            $status = 1; 
-        };
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        Report::create([
-            'reservation_id' => $id,
-            'weight' => $request->berat_badan,
-            'height'=> $request->tinggi_badan,
-            'temperature' => $request->suhu_badan,
-            'initial_complaint' => $request->keluhan,
-            'diagnosis' => $request->diagnosa,
-            'recommendations' => $request->anjuran,
-            'medications' => $request->obat,
-            'sick_note' =>  $request->surat_dokter == null ? '0' : '1' ,
-        ]);
+            // dd($request->all());
 
-        Payment::create([
-            'reservation_id' => $id,
-            'amount' => $biaya,
-            'status' => $status,
-        ]);
-        
-        return redirect('/admin/antrian-pemeriksaan/hasil-pemeriksaan/' . $id)->with('success', 'Data berhasil ditambah!');
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/antrian-pemeriksaan/hasil-pemeriksaan', [
+                'id' => $request->id,
+                'berat_badan' => $request->berat_badan,
+                'tinggi_badan' => $request->tinggi_badan,
+                'suhu_badan' => $request->suhu_badan,
+                'keluhan' => $request->keluhan,
+                'diagnosa' => $request->diagnosa,
+                'anjuran' => $request->anjuran,
+                'obat' => $request->obat,
+                'biaya' => $request->biaya,
+                'surat_dokter' => $request->surat_dokter
+            ]);
+
+            if ($response->successful() && $response['status'] === 'success') {
+                return redirect()->back()->withToastSuccess('Laporan berhasil dibuat!');
+            } else {
+                return redirect()->back()->withErrors(['error' => $response['message']]);
+            }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi
+            return redirect()->back()->withErrors(['error' => 'Gagal membuat reservasi.']);
+        }
     }
 
-    public function update(Request $request,$id) {
-        $report = Report::where('reservation_id',$id)->first();
-        $payment = Payment::where('reservation_id',$id)->first();
+    public function update(Request $request) {
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        $biaya = $request->biaya;
-        $status = 0;
-        
-        if($request->biaya == null || $request->biaya == '0') {
-            $biaya = "0";
-            $status = 1; 
-        };
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/antrian-pemeriksaan/hasil-pemeriksaan/update', [
+                'id' => $request->id,
+                'berat_badan' => $request->berat_badan,
+                'tinggi_badan' => $request->tinggi_badan,
+                'suhu_badan' => $request->suhu_badan,
+                'keluhan' => $request->keluhan,
+                'diagnosa' => $request->diagnosa,
+                'anjuran' => $request->anjuran,
+                'obat' => $request->obat,
+                'biaya' => $request->biaya,
+                'surat_dokter' => $request->surat_dokter
+            ]);
 
-        $request->validate([
-            'berat_badan' => 'required|numeric|max:500',
-            'tinggi_badan' => 'required|numeric|min:32|max:250',
-            'suhu_badan' => 'required|numeric|min:32|max:42',
-            'keluhan' => 'required|string',
-            'diagnosa' => 'required|string',
-            'anjuran' => 'required|string',
-            'obat' => 'required|string',
-        ]);
-
-        $report->update([
-            'weight' => $request->berat_badan,
-            'height'=> $request->tinggi_badan,
-            'temperature' => $request->suhu_badan,
-            'initial_complaint' => $request->keluhan,
-            'diagnosis' => $request->diagnosa,
-            'recommendations' => $request->anjuran,
-            'medications' => $request->obat,
-            'sick_note' => $request->surat_dokter == null ? '0' : '1' ,
-        ]);
-
-        $payment->update([
-            'amount' => $biaya,
-            'status' => $status,
-        ]);
-        
-        return redirect('/admin/antrian-pemeriksaan/hasil-pemeriksaan/' . $id)->with('success', 'Data berhasil diupdate!');
+            if ($response->successful() && $response['status'] === 'success') {
+                return redirect()->back()->withToastSuccess('Laporan berhasil diupdate!');
+            } else {
+                return redirect()->back()->withErrors(['error' => $response['message']]);
+            }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi
+            return redirect()->back()->withErrors(['error' => 'Gagal update laporan.']);
+        }
     }
 }

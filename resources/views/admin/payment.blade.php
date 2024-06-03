@@ -65,7 +65,7 @@
                                         {{  Str::ucfirst($payment->reservation->doctor->specialization) }}
                                     </td>
                                     <td class="px-6 py-4 ">
-                                        {{ $payment->reservation->tanggal }}
+                                        {{ $payment->reservation->date }}
                                     </td>
                                     <td class="px-6 py-4">
                                         Rp. {{ $payment->amount }}
@@ -76,9 +76,9 @@
                             
                                     <td class="px-6 py-4">
                                         <div class="flex items-center justify-center space-x-2">
-                                            <form class="doctor-delete-form" action="/admin/pembayaran/complete/{{ $payment->id }}" method="POST">
+                                            <form class="doctor-delete-form" action="/admin/pembayaran/complete?id={{ $payment->id }}" method="POST">
                                                 @csrf
-                                                <button type="submit" class="grid w-8 bg-green-100 rounded-md place-items-center aspect-square ">
+                                                <button dia {{ $payment->amount != 0 && $payment->status == 1 ? 'disabled' : '' }} type="submit" class="grid w-8 bg-green-100 rounded-md place-items-center aspect-square ">
                                                     <img class="{{ $payment->amount == 0 ? 'opacity-50' : ''}}" src="/img/antrian-complete.png" alt="delete-icon" />
                                                 </button>
                                             </form>

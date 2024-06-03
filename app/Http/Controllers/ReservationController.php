@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\DoctorSchedule;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\StoreReservationRequest;
 use App\Http\Requests\UpdateReservationRequest;
 
@@ -20,156 +21,144 @@ class ReservationController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        $reservation = Reservation::with('doctor')
-        ->when($request->tanggal_reservasi, function ($query) use ($request) {
-            $originalDate = $request->tanggal_reservasi;
-            $carbonDate = Carbon::createFromFormat('m/d/Y', $originalDate);
-            $formattedDate = $carbonDate->format('Y-m-d');
-            $query->where('date', $formattedDate);
-        }, function ($query) {
-            $query->where('date', Carbon::now()->addHours(7)->format('Y-m-d'));
-        })
-        ->when($request->poli, function ($query) use ($request) {
-            $query->whereHas('doctor', function ($subquery) use ($request) {
-                $subquery->where('specialization', $request->poli);
-            });
-        })
-        ->when($request->jam_mulai, function ($query) use ($request) {
-            $query->where('start_hour', $request->jam_mulai);
-        }, function ($query) {
-            $query->where('date', "07:00:00");
-        })
-        ->where('status', '!=', 'canceled') 
-        ->paginate(10);
 
-    return view('admin.queue', ["daftar_jam" => ScheduleTime::all(), "reservations" => $reservation]);
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
+
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/antrian-pemeriksaan', [
+                'poli' => $request->poli,
+                'tanggal_reservasi' => $request->tanggal_reservasi,
+                'jam_mulai' => $request->jam_mulai,
+            ]);
+
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+
+            return view('admin.queue', ["daftar_jam" => $objectData->data->daftar_jam, "reservations" => $objectData->data->reservations]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }      
+
+    
     }
 
-    public function completeReservation($id) {
-        $reservation = Reservation::findOrFail($id);
-        $reservation->update([
-            "status" => 'completed',
-        ]);
+    public function completeReservation(Request $request) {
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        $reservation->doctor->update(
-            [
-                'total_pasien' => Reservation::where('doctor_id', $reservation->doctor->id)->where('status', 'completed')->count(),
-            ]
-        );
+            // dd($request->all());
 
-        return redirect()->back()->with('success', 'Reservasi berhasil diselesaikan');
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/admin/antrian-pemeriksaan/complete', [
+                'id' => $request->id,
+            ]);
 
-    }
-
-    public function showReportForm($id) {
-        // dd(Report::where('reservation_id',$id)->first() != null);
-        if(Report::where('reservation_id',$id)->first() == null) {
-            return view('admin.result_form',["reservation" => Reservation::with(['patient','doctor'])->findOrFail($id)]);
-        } else {
-            return view('admin.result_form_edit',["report" => Report::where('reservation_id',$id)->first()]);
+            if ($response->successful() && $response['status'] === 'success') {
+                // Jika berhasil, kembalikan ke halaman sebelumnya dengan pesan sukses
+                return redirect()->back()->withToastSuccess('Reservation berhasil diselesaikan!');
+            } else {
+                return redirect()->back()->withErrors(['error' => $response['message']]);
+            }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi
+            return redirect()->back()->withErrors(['error' => 'Gagal membuat reservasi.']);
         }
     }
 
+    public function showReportForm(Request $request) {
+        // dd($request->all());
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
+            
+            // dd($request->id);
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/antrian-pemeriksaan/hasil-pemeriksaan', [
+                'id' => $request->id,
+            ]);
+
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+            // dd($objectData->data);
+
+            if ($objectData->data->report === null) {
+                return view('admin.result_form', ["reservation" => $objectData->data->reservation]);
+            }else if ($objectData->data->report !== null) {
+                return view('admin.result_form_edit', ["report" => $objectData->data->report]);
+            }
+
+            // dd($objectData->data->reservation);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }  
+    }
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request,$id)
+    public function store(Request $request)
     {
-
-        // $request->validate([
-        //     'tanggal_reservasi' => 'required',
-        //     'jam' => 'required',
-        //     'keluhan_awal' => 'required',
-        // ],[
-        //     'tanggal_reservasi.required' => 'Harap isi tanggal reservasi',
-        //     'jam.required' => 'Harap pilih jam reservasi',
-        //     'keluhan_awal.required' => 'Harap isi keluhan awal',
-        // ]);
-
-        $tanggal = date('Y-m-d', strtotime($request->tanggal_reservasi));
-        $jamArray = explode(' - ', $request->jam);
-        $jam_mulai = $jamArray[0];
-        $jam_selesai = $jamArray[1];
-
-        $patient = Patient::find(Auth::user()->id);
         
-        $waktu_sekarang = date("H:i:s");
-        $waktu_sekarang_final = date("H:i:s", strtotime($waktu_sekarang) + 7 * 3600);
-        $dateTime_mulai = \DateTime::createFromFormat('H:i', $jam_mulai);
-        $dateTime_selesai = \DateTime::createFromFormat('H:i', $jam_selesai);
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
 
-        // dd($waktu_sekarang,$dateTime_mulai,$dateTime_selesai);
-        // dd($request->tanggal_reservasi,Carbon::today()->format('m/d/Y'));
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/lakukan-reservasi/detail', [
+                'tanggal_reservasi' => $request->tanggal_reservasi,
+                'jam' => $request->jam,
+                'id' => $request->id,
+                'patient_id' => $user['id'],
+            ]);
 
-        $nextQueueNumber = $this->calculateNextQueueNumber($id, $tanggal);
+            if ($response->successful() && $response['status'] === 'success') {
+                // Jika berhasil, kembalikan ke halaman sebelumnya dengan pesan sukses
+                return redirect()->back()->withToastSuccess('Reservation berhasil dibuat!');
+            } else {
 
-        // if($patient->gender == null && $patient->phone == null && $patient->address == null && $patient->birthdate == null) {
-        //     return redirect()->back()->with('error','Harap lengkapi profil');
-        // };
-
-        //  dd($jam_mulai,$waktu_ditambahkan);
-        // dd($waktu_sekarang_final >= $jam_selesai );
-        if (($waktu_sekarang_final >= $jam_selesai) && ($request->tanggal_reservasi == Carbon::today()->format('m/d/Y'))) {
-            return redirect()->back()->with('error','Waktu tidak valid');
+                // dd($response->body());
+                // Jika ada kesalahan, kembalikan ke halaman sebelumnya dengan pesan error dari API
+                return redirect()->back()->withErrors(['error' => $response['message']]);
+            }
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika terjadi
+            return redirect()->back()->withErrors(['error' => 'Gagal membuat reservasi.']);
         }
-
-        if(Reservation::where('start_hour',$jam_mulai)
-                        ->where('end_hour',$jam_selesai)
-                        ->where('date',$tanggal)
-                        ->where('patient_id',Auth::user()->id)
-                        ->where('status','!=','canceled')->first()) {
-            return redirect('/lakukan-reservasi')->with('error','Anda telah melakukan booking ini!');
-        }
-
-        if($nextQueueNumber == 21) {
-            return redirect('/lakukan-reservasi')->with('error','Kuota Full!');
-        }
-
-        if(Reservation::where('patient_id',Auth::user()->id)->where('status','approved')->count() == 3) {
-            return redirect()->back()->with('error','Anda telah mencapai kuota maksimal 3 reservasi');
-        };
-
-        $user = Patient::find(Auth::user()->id);
-        $user->doctors()->attach($id,['date' => $tanggal,'start_hour' => $jam_mulai,'end_hour' => $jam_selesai,'status' => 'approved', 'queue_number' => $nextQueueNumber]);
-
-
-        return redirect('/lakukan-reservasi')->withToastSuccess('Reservation berhasi dibuat!');
     }
 
-    // Logika untuk menghitung nomor antrian secara manual
-    private function calculateNextQueueNumber($doctorId, $tanggal)
-    {
-        // dd($doctorId, $tanggal);
-        
-        $lastReservation = Reservation::where('doctor_id', $doctorId)
-        ->where('date', $tanggal)
-        ->where('status','!=','canceled')
-        ->orderBy('queue_number', 'desc')
-        ->first();
-        
+    public function cancel(Request $request) {
+        try {
+            // Mengambil token dari session atau tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        $nextQueueNumber = $lastReservation ? $lastReservation->nomor_antrian + 1 : 1;
-
-        return $nextQueueNumber;
-    }
-
-    public function cancel(Request $request, $reservationId) {
-        $reservation = Reservation::find($reservationId);
-
-        // Simpan nomor antrian yang akan dihapus
-        $canceledQueueNumber = $reservation->queue_number;
-
-        // Batalkan reservasi
-        $reservation->update(['status' => 'canceled']);
-
-        // Hapus nomor antrian yang dibatalkan
-        Reservation::where('doctor_id', $reservation->doctor_id)
-            ->where('date', $reservation->date)
-            ->where('queue_number', '>', $canceledQueueNumber)
-            ->decrement('queue_number');
-
-        // Redirect atau tampilkan pesan sukses
-        return redirect()->back()->with('success', 'Reservasi berhasil dibatalkan.');
+            // Panggil API dengan token bearer
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->post('http://127.0.0.1:8000/api/reservasi-saya/cancel', [
+                'id' => $request->id,
+            ]);
+            
+            return redirect()->back()->withToastSuccess($response['message']);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $response['message']]);
+        }
     }
     
 }

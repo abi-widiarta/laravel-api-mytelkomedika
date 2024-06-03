@@ -33,7 +33,7 @@
                     </ul>
                 </div>
             </div>
-            @if ($daftar_reservasi->count() == 0)
+            @if ($daftar_reservasi == [])
                 <p class="w-full mt-4 text-sm font-medium text-center text-gray-500">Anda belum memiliki reservasi</p>
                 
             @else
@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                                 <div class="flex justify-start w-full ">
-                                    <form class="doctor-batalkan-reservasi" action="/reservasi-saya/cancel/{{ $reservasi->id }}" method="POST">
+                                    <form class="doctor-batalkan-reservasi" action="/reservasi-saya/cancel?id={{ $reservasi->id }}" method="POST">
                                         @csrf
                                         <button type="submit" class="py-3 text-sm text-white px-10 shadow-lg bg-gradient-to-r from-[#ED1C24]/90 to-[#ED1C24]/50 rounded-xl transition duration-200 hover:bg-[#ED1C24]">
                                             Batalkan

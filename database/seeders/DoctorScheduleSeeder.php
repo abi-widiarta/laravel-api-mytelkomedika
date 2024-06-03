@@ -24,14 +24,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 1,
                 "schedule_time_id" => 2,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -39,7 +39,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -47,7 +47,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -55,7 +55,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -63,7 +63,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI UMUM
@@ -74,7 +74,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -82,7 +82,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -90,7 +90,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -98,7 +98,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -106,7 +106,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             
             [
@@ -114,7 +114,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI UMUM
@@ -125,21 +125,21 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 3,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 3,
                 "schedule_time_id" => 3,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 3,
                 "schedule_time_id" => 3,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI UMUM
@@ -150,14 +150,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 4,
                 "schedule_time_id" => 2,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -165,7 +165,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -173,7 +173,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI UMUM
@@ -184,7 +184,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -192,7 +192,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -200,7 +200,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -208,7 +208,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI UMUM
@@ -219,14 +219,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 3,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 6,
                 "schedule_time_id" => 3,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI MATA
@@ -237,14 +237,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 7,
                 "schedule_time_id" => 2,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -252,7 +252,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -260,7 +260,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -268,7 +268,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -276,7 +276,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI MATA
@@ -287,7 +287,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -295,7 +295,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -303,7 +303,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -311,7 +311,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -319,7 +319,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             
             [
@@ -327,7 +327,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI MATA
@@ -338,21 +338,21 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 3,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 9,
                 "schedule_time_id" => 3,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 9,
                 "schedule_time_id" => 3,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI MATA
@@ -363,14 +363,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 10,
                 "schedule_time_id" => 2,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -378,7 +378,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -386,7 +386,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI MATA
@@ -397,7 +397,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -405,7 +405,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -413,7 +413,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -421,7 +421,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI MATA
@@ -432,14 +432,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 3,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 12,
                 "schedule_time_id" => 3,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI GIGI
@@ -450,14 +450,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 13,
                 "schedule_time_id" => 2,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -465,7 +465,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -473,7 +473,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -481,7 +481,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -489,7 +489,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI GIGI
@@ -500,7 +500,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -508,7 +508,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -516,7 +516,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -524,7 +524,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -532,7 +532,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             
             [
@@ -540,7 +540,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI GIGI
@@ -551,21 +551,21 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 3,
                 "day" => "senin",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 15,
                 "schedule_time_id" => 3,
                 "day" => "rabu",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 15,
                 "schedule_time_id" => 3,
                 "day" => "jumat",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
             // POLI GIGI
@@ -576,14 +576,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 16,
                 "schedule_time_id" => 2,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -591,7 +591,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 1,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -599,7 +599,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 2,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI GIGI
@@ -610,7 +610,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -618,7 +618,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             [
@@ -626,7 +626,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 4,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
       
             [
@@ -634,7 +634,7 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 5,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
     
             // POLI GIGI
@@ -645,14 +645,14 @@ class DoctorScheduleSeeder extends Seeder
                 "schedule_time_id" => 3,
                 "day" => "selasa",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
             [
                 "doctor_id" => 18,
                 "schedule_time_id" => 3,
                 "day" => "kamis",
                 "max_patient" => 30,
-                "end_date" => "2024-02-01",
+                "end_date" => "2024-07-08",
             ],
 
         ];

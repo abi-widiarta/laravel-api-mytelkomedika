@@ -40,9 +40,12 @@
                         @endisset
                     </ul>
                 </div>  
+
+                {{-- @dd($reservation) --}}
+
                 <div class="w-full">
                   <h1 class="mb-10 text-lg font-semibold text-center">Form Hasil Pemeriksaan</h1>
-                  <form class="w-[80%] mx-auto pl-6 space-y-8" action="/admin/antrian-pemeriksaan/hasil-pemeriksaan/{{ $reservation->id }}" method="post">
+                  <form class="w-[80%] mx-auto pl-6 space-y-8" action="/admin/antrian-pemeriksaan/hasil-pemeriksaan?id={{ $reservation->id }}" method="post">
                     @csrf
                     <div class="flex items-center">
                       <label class="w-[20%] text-sm" for="patient">Pasien</label>

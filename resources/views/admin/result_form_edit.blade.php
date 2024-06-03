@@ -1,9 +1,7 @@
 @extends('layouts.layoutDashboardAdmin')
 
 @section('content')
-        {{-- @foreach ($schedule as $s)
-            <p>{{ $s }}</p>
-        @endforeach --}}
+
         <div class="flex flex-col h-full">
             <header class="flex items-center justify-between mb-4">
                 <div class="flex items-center justify-start space-x-4">
@@ -42,7 +40,7 @@
                 </div>  
                 <div class="w-full">
                   <h1 class="mb-10 text-lg font-semibold text-center">Form Hasil Pemeriksaan</h1>
-                  <form class="w-[80%] mx-auto pl-6 space-y-8" action="/admin/antrian-pemeriksaan/hasil-pemeriksaan/update/{{ $report->reservation->id }}" method="post">
+                  <form class="w-[80%] mx-auto pl-6 space-y-8" action="/admin/antrian-pemeriksaan/hasil-pemeriksaan/update?id={{ $report->reservation->id }}" method="post">
                     @csrf
                     <div class="flex items-center">
                       <label class="w-[20%] text-sm" for="patient">Pasien</label>

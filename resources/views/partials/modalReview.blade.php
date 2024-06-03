@@ -16,13 +16,11 @@
                   <div class="flex flex-col items-center">
                     <img class="object-cover mb-2 rounded-md w-36 h-44" src="{{ $report->reservation->doctor->image }}" alt="">
                     <h2 class="text-base font-semibold">{{ $report->reservation->doctor->name }}</h2>
-                    <p>Poli {{  ucfirst($report->reservation->doctor->spesialisasi) }}</p>
+                    <p>Poli {{  ucfirst($report->reservation->doctor->specialization) }}</p>
                   </div>
                   <div class="h-full w-80">
-                    <form class="form-lakukan-reservasi" action="/riwayat-pemeriksaan/detail/review/{{ $report->id }}" method="post">
+                    <form class="form-lakukan-reservasi" action="/riwayat-pemeriksaan/detail/review?id={{ $report->id }}" method="post">
                       @csrf
-                      {{-- <input type="hidden" id="dayName" name="hari">
-                      <input type="hidden" id="jam_selesai" name="jam_selesai"> --}}
                       <input type="hidden" name="doctor_id" value="{{ $report->reservation->doctor->id }}">
                       <div class="flex flex-col items-start mb-6 space-y-2">
                         <label class="text-sm font-semibold" for="keluhan">Rating</label>

@@ -3,6 +3,7 @@
   Reservasi
 </button>
 
+{{-- @dd($data) --}}
 <!-- Main modal -->
 <div backdropClasses="bg-gray-200" id="static-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-gray-700/20">
     <div class="relative max-h-full py-4">
@@ -14,12 +15,12 @@
                 <span class="block w-full h-[3px] bg-gray-600/10 mb-8 rounded-md"></span>
                 <div class="flex space-x-8">
                   <div class="flex flex-col items-center">
-                    <img class="object-cover mb-2 rounded-md w-36 h-44" src="{{ $doctor->image }}" alt="">
-                    <h2 class="text-base font-semibold">{{ $doctor->name }}</h2>
-                    <p>Poli {{  ucfirst($doctor->spesialisasi) }}</p>
+                    <img class="object-cover mb-2 rounded-md w-36 h-44" src="{{ $data['doctor']['image'] }}" alt="">
+                    <h2 class="text-base font-semibold">{{ $data['doctor']['name'] }}</h2>
+                    <p>Poli {{  ucfirst($data['doctor']['specialization']) }}</p>
                   </div>
                   <div class="h-full w-96">
-                    <form class="form-lakukan-reservasi" action="/lakukan-reservasi/detail/{{ $doctor->id }}" method="post">
+                    <form class="form-lakukan-reservasi" action="/lakukan-reservasi/detail?id={{ $data['doctor']['id'] }}" method="post">
                       @csrf
                       <div class="flex justify-between space-x-4">
                         <div class="flex flex-col items-start mb-4 space-y-2 w-[65%]">
@@ -67,8 +68,8 @@
   
 </div>
 <script defer>
-  let dokterHariPraktek = <?= json_encode($doctor->schedule_time) ?>;
-  let maxSelectableDate = new Date("<?= $doctor->schedule_time[0]->pivot->end_date ?>");
+  let dokterHariPraktek = <?= json_encode($data['doctor']['schedule_time']) ?>;
+  let maxSelectableDate = new Date("<?= $data['doctor']['schedule_time'][0]['pivot']['end_date'] ?>");
 
 
   // Cek hasilnya di konsol
