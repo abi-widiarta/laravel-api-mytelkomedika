@@ -3,7 +3,7 @@
       <div class="flex items-center justify-center w-8 text-white bg-gray-600 rounded-full aspect-square">
       </div>
       <div class="text-start md:block">
-          <p class="text-xs">User</p>
+          <p class="text-xs">{{ session('user')['name'] }}</p>
       </div>
   </div>
 </button>
@@ -16,38 +16,3 @@
       <p >Profile</p>
   </a>
 </div>
-{{-- <script>
-  // Fungsi untuk menutup dropdown jika di-klik di luar dropdown
-  function closeDropdownOnClickOutside(event) {
-      const dropdownMenu = document.querySelector("#dropdown-menu");
-      
-      // Periksa apakah elemen yang diklik berada di dalam dropdown
-      const isClickInsideDropdown = dropdownMenu.contains(event.target);
-  
-      // Jika tidak, tutup dropdown
-      if (!isClickInsideDropdown) {
-          dropdownMenu.classList.remove("dropdown-open");
-          // Hapus event listener setelah dropdown ditutup
-          document.removeEventListener("click", closeDropdownOnClickOutside);
-      }
-  }
-  
-  // Fungsi toggle untuk membuka dan menutup dropdown
-  function toggleDropdown() {
-      const dropdownMenu = document.querySelector("#dropdown-menu");
-      
-      // Periksa apakah dropdown sedang terbuka atau tertutup
-      const isOpen = dropdownMenu.classList.contains("dropdown-open");
-  
-      // Jika terbuka, tutup; jika tertutup, buka
-      if (isOpen) {
-          dropdownMenu.classList.remove("dropdown-open");
-      } else {
-          dropdownMenu.classList.add("dropdown-open");
-          // Tambahkan event listener untuk menutup dropdown jika diklik di luar dropdown
-          setTimeout(() => {
-              document.addEventListener("click", closeDropdownOnClickOutside);
-          }, 300);
-      }
-  }
-</script> --}}

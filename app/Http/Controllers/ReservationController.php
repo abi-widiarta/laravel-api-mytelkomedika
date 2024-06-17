@@ -1,20 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Doctor;
-use App\Models\Report;
-use App\Models\Patient;
-use App\Models\Reservation;
-use App\Models\ScheduleTime;
 use Illuminate\Http\Request;
-use App\Models\DoctorSchedule;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Http\Requests\StoreReservationRequest;
-use App\Http\Requests\UpdateReservationRequest;
-
 class ReservationController extends Controller
 {
     /**
@@ -54,8 +42,6 @@ class ReservationController extends Controller
             // Mengambil token dari session atau tempat penyimpanan lainnya
             $token = $request->session()->get('token');
 
-            // dd($request->all());
-
             // Panggil API dengan token bearer
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $token,
@@ -76,13 +62,11 @@ class ReservationController extends Controller
     }
 
     public function showReportForm(Request $request) {
-        // dd($request->all());
         try {
             // Mengambil token dari session atau dari tempat penyimpanan lainnya
             $token = $request->session()->get('token');
             $user = $request->session()->get('user');
             
-            // dd($request->id);
             // Menyertakan token dalam header Authorization
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $token,
@@ -107,9 +91,7 @@ class ReservationController extends Controller
             return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
         }  
     }
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
         

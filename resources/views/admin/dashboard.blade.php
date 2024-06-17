@@ -1,4 +1,4 @@
-@extends('layouts.layoutDashboardAdmin')
+@extends('layouts.layout_dashboard_admin')
 
 @section('content')
         <div class="h-full">
@@ -7,7 +7,7 @@
                     <h1 class="text-xl font-semibold">Dashboard</h1>
                 </div>
                 <div class="relative flex items-center space-x-4">
-                    @include('partials.dropdownProfile')
+                    @include('partials.profile')
                 </div>
             </header>
             <div class="grid grid-cols-4 gap-6 mt-6">

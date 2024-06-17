@@ -14,23 +14,32 @@ use Illuminate\Auth\Events\Registered;
 class RegisterController extends Controller
 {
     public function index() {
-        return "index register";
+        return view('auth.client_register');
     }
 
-  
 
-    public function storeAdmin(Request $request) {
-        $validatedData = $request->validate([
-            'name' => 'required|max:50',
-            'username' => 'required|min:3|max:15|unique:patients',
-            'email' => 'required|max:50|unique:patients|email:dns,rfc',
-            'password' => 'required|max:15|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-        ]);
+    public function storePatient(Request $request)
+    {
+        try {
+            // Memanggil API untuk registrasi
+            $response = Http::post('http://127.0.0.1:8000/api/register', [
+                'student_id' => $request->input('student_id'),
+                'name' => $request->input('name'),
+                'username' => $request->input('username'),
+                'email' => $request->input('email'),
+                'password' => $request->input('password')
+            ]);
 
-        $validatedData['password'] = bcrypt($request->password);
-
-        Admin::create($validatedData);
-
-        return redirect('/admin/login');
+            // Cek apakah registrasi berhasil
+            if ($response->successful()) {
+                return redirect('/login')->with('status', 'Registrasi berhasil. Silakan login.');
+            } else {
+                $errors = $response->json()['errors'] ?? ['api_error' => 'Registrasi gagal. Silakan coba lagi.'];
+                return redirect()->back()->withErrors($errors)->withInput();
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['api_error' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
+        }
     }
+
 }

@@ -1,4 +1,4 @@
-@extends('layouts.layoutDashboardAdmin')
+@extends('layouts.layout_dashboard_admin')
 
 @section('content')
         {{-- @foreach ($schedule as $s)
@@ -11,7 +11,7 @@
                     <h1 class="text-xl font-semibold">Antrian Pemeriksaan</h1>
                 </div>
                 <div class="relative flex items-center space-x-4">
-                    @include('partials.dropdownProfile')
+                    @include('partials.profile')
                 </div>
             </header>
 

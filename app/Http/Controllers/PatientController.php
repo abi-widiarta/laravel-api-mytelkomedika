@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\Doctor;
 use App\Models\Report;
-use App\Models\Review;
 use App\Models\Patient;
-use App\Models\Reservation;
 use Illuminate\Http\Request;
 use App\Models\DoctorSchedule;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Http\Controllers\AuthController;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -22,15 +16,27 @@ class PatientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {   
-        $patients = Patient::query();
+        try {
+            
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
+            $user = $request->session()->get('user');
 
-        if (request('search')) {
-            $patients->where('name', 'like', '%' . request('search') . '%')->orWhere('student_id', 'like', '%' . request('search') . '%');
-        }
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/data-pasien');
 
-        return view("admin.patient_data", ["patients" => $patients->paginate(10)->withQueryString()]);
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
+
+            return view('admin.patient_data', ["patients" => $objectData->data]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
+        }    
     }
 
     public function authenticate(Request $request)
@@ -66,7 +72,6 @@ class PatientController extends Controller
 
     public function dashboard(Request $request)
     {
-        // dd("dashboard");
         try {
             
             // Mengambil token dari session atau dari tempat penyimpanan lainnya
@@ -90,33 +95,12 @@ class PatientController extends Controller
         }
     }
 
-    // public function showDoctors(Request $request) {
-    //     $doctors = Doctor::when($request->poli, function($query) use ($request) {
-    //         return $query->where('specialization', $request->poli);
-    //     })->whereHas('schedule_time', function ($query) {
-    //         $query->whereNotNull('schedule_time_id'); // Sesuaikan dengan nama kolom di tabel pivot
-    //     });
-
-    //     $doctors = $doctors->paginate(10)->withQueryString();
-
-    //     $ratings = [];
-
-    //     foreach ($doctors as $doctor) {
-    //         $rating = number_format(Review::where('doctor_id', $doctor->id)->avg('rating'), 1);
-    //         $ratings[] = $rating;
-    //     }
-        
-    //     return view('client.make_reservation',["doctors" => $doctors, "ratings" => $ratings]);
-    // }
-
     public function showDoctors(Request $request) {
         try {
             
             // Mengambil token dari session atau dari tempat penyimpanan lainnya
             $token = $request->session()->get('token');
             $user = $request->session()->get('user');
-
-            // dd($token);
 
             // Menyertakan token dalam header Authorization
             $response = Http::withHeaders([
@@ -127,104 +111,11 @@ class PatientController extends Controller
 
             $data = $response->json();
 
-            // dd($data);
-
             return view('client.make_reservation', ['data' => $data['data'],'user' => $user]);
         } catch (\Exception $e) {
             // Tangani kesalahan jika ada
             return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
-        }
-        
-        // return view('client.make_reservation',["doctors" => $doctors, "ratings" => $ratings]);
-    }
-
-    public function destroy(Request $request) {
-        Patient::where('id', $request->id)->delete();
-
-        return redirect('/admin/data-pasien')->with('success', 'Data berhasil dihapus!');
-    }
-
-    public function edit($username) {
-        try {
-            $patient = Patient::where('username',$username)->firstOrFail();
-
-            return view('admin.patient_data_edit',["patient" => $patient]);
-        } catch (ModelNotFoundException $exception) {
-            return view("client.notFound",["exception" => $exception]);
-        }
-
-        
-    }
-
-    public function update(Request $request,$id) {
-        $patient = Patient::findOrFail($id);
-
-        try {
-            $request->validate([
-                'no_hp' => 'required|min:11|max:13',
-                'alamat' => 'required|max:256',
-                'jenis_kelamin' => 'required',
-                'tanggal_lahir' => 'required',
-                'password' => 'nullable|max:15|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/'
-            ]);
-
-            if ($request->password == null) {
-                $patient->update([
-                    "phone" => $request->no_hp,
-                    "gender" => $request->jenis_kelamin,
-                    "birthdate" => $request->tanggal_lahir,
-                    "address" => $request->alamat
-                ]);
-            } else {
-                $patient->update([
-                    "phone" => $request->no_hp,
-                    "gender" => $request->jenis_kelamin,
-                    "birthdate" => $request->tanggal_lahir,
-                    "address" => $request->alamat,
-                    "password" => bcrypt($request->password) 
-                ]);
-            }
-    
-            $patient = Patient::findOrFail($request->id);
-    
-    
-            return back()->with('success','Data berhasil diupdate!');
-        } catch (ValidationException $e) {
-            return redirect('/admin/data-pasien/edit/' . $request->username)->with('toast_error', $e->getMessage());
-        } catch (\Exception $e) {
-            return redirect('/admin/data-pasien/edit/' . $request->username)->withErrors(['error' => 'Terjadi kesahalan!']);
-        }
-    }
-
-    public function profileEdit() {
-        return view("client.profile");
-    }
-
-    public function profileUpdate(Request $request) {
-        try {
-            $request->validate([
-                'phone' => 'required|numeric|digits_between:11,13',
-                'address' => 'required|string|max:256',
-                'birthdate' => 'required|date',
-                'gender' => 'required',
-            ]);
-    
-           Patient::findOrFail($request->id)->update([
-                "phone" => $request->phone,
-                "gender" => $request->gender,
-                "birthdate" => $request->birthdate,
-                "address" => $request->address
-            ]);
-
-    
-            return redirect('/profile')->with('success','Update profil berhasil!');
-        } catch (ValidationException $e) {
-            // Tangkap exception jika validasi gagal
-            return redirect('/profile')->with('toast_error', $e->getMessage());
-        } catch (\Exception $e) {
-            // Tangkap exception lain jika terjadi kesalahan lainnya
-            return redirect('/profile')->withErrors(['error' => 'Terjadi kesalahan!']);
-        }
+        }        
     }
 
     public function showReservations(Request $request) {
@@ -307,8 +198,6 @@ class PatientController extends Controller
             // Tangani kesalahan jika ada
             return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
         }
-
-        return view('client.reservation_result_detail', ["report" => $report]);
     }
 
     public function showResultDetailPDF($id) {
@@ -345,8 +234,6 @@ class PatientController extends Controller
             // Tangani kesalahan jika ada
             return redirect()->back()->withErrors(['error' => 'Failed to retrieve dashboard data.']);
         }
-
-        return view('client.make_reservation_detail',["doctor" => $doctor, "schedules" => DoctorSchedule::where('doctor_id',$doctor->id)->get(),"reviews" =>$reviews]);
     }
 
     public function makeReview(Request $request) {
