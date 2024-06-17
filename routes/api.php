@@ -6,7 +6,6 @@ use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use App\Http\Resources\DoctorResource;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\ReportController;
@@ -61,10 +60,10 @@ Route::post('logout', function (Request $request) {
 
 })->middleware(['auth:sanctum']);
 
-// PATIENT
-
 Route::get('/doctors', [PatientController::class, 'showDoctors']);
 
+
+// PATIENT
 Route::post('/login', function (Request $request) {
     $request->validate([
         'username' => 'required',
@@ -87,6 +86,8 @@ Route::post('/login', function (Request $request) {
         'user' => $user // Jika Anda ingin mengembalikan informasi pengguna lainnya juga
     ]);
 });
+
+Route::post('/register', [PatientController::class, 'storePatient']);
 
 Route::get('/dashboard', [PatientController::class, 'dashboard'])->middleware(['auth:sanctum']);
 
@@ -160,24 +161,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/data-pasien',[PatientController::class, 'index']); 
     
     Route::get('/admin/data-dokter',[DoctorController::class, 'index']);
-
-    Route::post('/admin/data-dokter/store',[DoctorController::class, 'store']);
-
-    Route::get('/admin/data-dokter/edit',[DoctorController::class, 'edit']);
-
-    Route::post('/admin/data-dokter/update',[DoctorController::class, 'update']);
-
-    Route::post('/admin/data-dokter/delete', [DoctorController::class, 'destroy']);
     
     Route::get('/admin/jadwal-dokter', [DoctorScheduleController::class, 'index']);
-
-    Route::get('/admin/jadwal-dokter/create', [DoctorScheduleController::class, 'create']);
-    
-    Route::post('/admin/jadwal-dokter/store',[DoctorScheduleController::class, 'store']);
-
-    Route::get('/admin/jadwal-dokter/edit', [DoctorScheduleController::class, 'edit']);
-
-    Route::post('/admin/jadwal-dokter/update', [DoctorScheduleController::class, 'update']);
 
     Route::get('/admin/antrian-pemeriksaan', [ReservationController::class, 'index']);
 
@@ -189,15 +174,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/admin/data-admin', [AdminController::class, 'index']);
 
-    Route::post('/admin/data-admin/store', [AdminController::class, 'store']);
-
-    Route::get('/admin/data-admin/edit', [AdminController::class, 'edit']);
-
-    Route::post('/admin/data-admin/edit', [AdminController::class, 'update']);
-
-    Route::post('/admin/data-admin/delete', [AdminController::class, 'destroy']);
-
     Route::get('/admin/data-review', [ReviewController::class, 'index']);
-
-    Route::post('/admin/data-review/delete', [ReviewController::class, 'destroy'] );
 });

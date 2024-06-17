@@ -43,7 +43,7 @@
             <div class="hidden w-full mt-3 md:block md:w-auto md:mt-0" id="navbar-default"></div>
         </div>
     </nav>
-
+    
     <section class="flex items-center bg-white">
         <div class="flex flex-col max-w-screen-xl px-4 py-8 mx-auto mt-[5rem] mb-6 md:flex-row md:items-center md:justify-center">
             <div class="w-[55%] flex justify-start">
@@ -52,48 +52,34 @@
             <div class=" w-[45%] flex justify-center items-center">
                 <form onsubmit="toggleDisable()" action="/register" method="POST" class="w-[75%]">
                     @csrf
-                    <h1 class="text-[#ED1C24] text-3xl font-semibold text-center mb-8">
-                        Register
-                    </h1>
-
-                    <div class="mb-{{ $errors->has('student_id') || $errors->has('student_id_validation') || $errors->has('name_validation') ? '2' : '6' }}">
+                    <h1 class="text-[#ED1C24] text-3xl font-semibold text-center mb-8">Register</h1>
+                
+                    <div class="mb-{{ $errors->has('student_id') ? '2' : '6' }}">
                         <label for="student_id" class="block mb-2 text-sm font-medium text-gray-900">Nim</label>
                         <input type="text"
                             name="student_id"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-[#ED1C24]/50"
                             required 
                             value="{{ old('student_id') }}"
-                            />
+                        />
                         @error('student_id') 
                             <small class="text-xs text-red-400">{{ $message }}</small>
                         @enderror
-                        @error('student_id_validation') 
-                            <small class="text-xs text-red-400">{{ $message }}</small>
-                        @enderror
-                        @error('api_error') 
-                            <small class="text-xs text-red-400">{{ $message }}</small>
-                        @enderror
-                        @error('name_validation') 
-                            <small class="text-xs text-red-400">{{ $message }}</small>
-                        @enderror
                     </div>
-
-                    <div class="mb-{{ $errors->has('name') || $errors->has('name_validation') ? '2' : '6' }}">
+                
+                    <div class="mb-{{ $errors->has('name') ? '2' : '6' }}">
                         <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Name</label>
                         <input type="text"
                             name="name"
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-[#ED1C24]/50"
                             required 
                             value="{{ old('name') }}"
-                            />
+                        />
                         @error('name') 
                             <small class="text-xs text-red-400">{{ $message }}</small>
                         @enderror
-                        @error('name_validation') 
-                            <small class="text-xs text-red-400">{{ $message }}</small>
-                        @enderror
                     </div>
-
+                
                     <div class="mb-{{ $errors->has('username') ? '2' : '6' }}">
                         <label for="username" class="block mb-2 text-sm font-medium text-gray-900">Username</label>
                         <input type="text"
@@ -101,12 +87,12 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:outline-[#ED1C24]/50"
                             required 
                             value="{{ old('username') }}"
-                            />
+                        />
                         @error('username') 
                             <small class="text-xs text-red-400">{{ $message }}</small>
                         @enderror
                     </div>
-
+                
                     <div class="mb-{{ $errors->has('email') ? '2' : '6' }}">
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Email</label>
                         <input type="email"
@@ -114,53 +100,49 @@
                             class="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 focus:border-[#ED1C24] focus:border-1"
                             required 
                             value="{{ old('email') }}"
-                            />
+                        />
                         @error('email') 
                             <small class="text-xs text-red-400">{{ $message }}</small>
                         @enderror
-                        @error('email_format') 
-                            <small class="text-xs text-red-400">{{ $message }}</small>
-                        @enderror
                     </div>
-
+                
                     <div class="mb-{{ $errors->has('password') ? '2' : '6' }}">
                         <label for="password" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                        <div
-                            class="flex justify-between bg-white border border-gray-300 text-gray-900 text-sm rounded-lg w-full focus:outline-[#ED1C24]/50 pr-2.5">
+                        <div class="flex justify-between bg-white border border-gray-300 text-gray-900 text-sm rounded-lg w-full focus:outline-[#ED1C24]/50 pr-2.5">
                             <input 
-                            id="password"
-                            name="password"
-                            type="password" class="p-2.5 rounded-lg focus:outline-[#ED1C24]/50 w-full mr-3"
-                                required />
+                                id="password"
+                                name="password"
+                                type="password" class="p-2.5 rounded-lg focus:outline-[#ED1C24]/50 w-full mr-3"
+                                required 
+                            />
                             <div onclick="togglePassword()" class="flex items-center transition-all duration-100 cursor-pointer hover:opacity-60">
                                 <img class="password-toggle-img" src="/img/icon-eye-closed.svg" alt="">
                             </div>
                         </div>
                         @error('password') 
-                            <small class="block mb-6 mt-2 text-[#ED1C24]  border-[#ED1C24] leading-5 bg-[#ED1C24]/5 pl-6 pr-3 py-2 rounded-lg">
+                            <small class="block mb-6 mt-2 text-[#ED1C24] border-[#ED1C24] leading-5 bg-[#ED1C24]/5 pl-6 pr-3 py-2 rounded-lg">
                                 <ul class="text-xs list-disc">
                                     <li>must at least 6 characters long</li>
-                                    <li>must contains uppercase,lowercase</li>
-                                    <li>must contains special characters</li>
+                                    <li>must contain uppercase, lowercase</li>
+                                    <li>must contain special characters</li>
                                 </ul>
                             </small>
                         @enderror
                     </div>
-
+                
                     <div class="flex items-start mb-6">
                         <p class="text-xs">
                             Already have an account?
                             <a href="/login" class="text-[#ED1C24]">Login here!</a>
                         </p>
                     </div>
-
+                
                     <button id="btn-register" type="submit"
-                        class="text-white rounded-full  bg-[#ED1C24] font-medium shadow-lg transition duration-200 hover:shadow-[#ED1C24]/50 shadow-[#ED1C24]/30 text-sm w-full sm:w-auto px-6 py-2.5 text-center active:opacity-50 active:translate-y-2 active:shadow-sm xl:w-full">
+                        class="text-white rounded-full bg-[#ED1C24] font-medium shadow-lg transition duration-200 hover:shadow-[#ED1C24]/50 shadow-[#ED1C24]/30 text-sm w-full sm:w-auto px-6 py-2.5 text-center active:opacity-50 active:translate-y-2 active:shadow-sm xl:w-full">
                         Continue
                     </button>
-
-                    
                 </form>
+                
             </div>
         </div>
     </section>

@@ -7,12 +7,14 @@ use App\Models\Doctor;
 use App\Models\Report;
 use App\Models\Review;
 use App\Models\Patient;
+use App\Models\Payment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\DoctorSchedule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
@@ -26,7 +28,6 @@ class PatientController extends Controller
                     ->orWhere('student_id', 'like', '%' . $searchTerm . '%');
             });
         }
-
 
         return response()->json([
             'status' => 'success',
@@ -111,6 +112,8 @@ class PatientController extends Controller
         ->take(3)
         ->get();
 
+        $pembayaran = Payment::with(['reservation', 'reservation.doctor', 'reservation.patient'])->where('patient_id', $request->id)->get();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Dashboard data retrieved successfully',
@@ -123,8 +126,51 @@ class PatientController extends Controller
                 "antrian_umum" => $antrian_umum == null ? '-' : $antrian_umum,
                 "antrian_mata" => $antrian_mata == null ? '-' : $antrian_mata,
                 "antrian_gigi" => $antrian_gigi == null ? '-' : $antrian_gigi,
+                "pembayaran" => $pembayaran
             ]
         ], 200);
+    }
+
+    public function storePatient(Request $request)
+    {
+        try {
+            // Validasi data input
+            $validatedData = $request->validate([
+                'student_id' => 'required|max:10|unique:patients',
+                'name' => 'required|max:50',
+                'username' => 'required|min:3|max:15|unique:patients',
+                'email' => 'required|max:50|unique:patients|email:dns,rfc',
+                'password' => [
+                    'required',
+                    'max:15',
+                    'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/'
+                ],
+            ]);
+
+            // Enkripsi password
+            $validatedData['password'] = bcrypt($request->password);
+
+            // Membuat pasien baru
+            Patient::create($validatedData);
+
+            // Mengembalikan respons JSON dengan pesan sukses
+            return response()->json([
+                'message' => 'Registrasi berhasil',
+            ], 200);
+
+        } catch (ValidationException $e) {
+            // Mengembalikan respons JSON dengan pesan kesalahan validasi
+            return response()->json([
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors(),
+            ], 422);
+        } catch (\Exception $e) {
+            // Mengembalikan respons JSON dengan pesan kesalahan umum
+            return response()->json([
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function showDoctors(Request $request)

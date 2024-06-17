@@ -1,4 +1,4 @@
-@extends('layouts.layoutDashboardAdmin')
+@extends('layouts.layout_dashboard_admin')
 
 @section('content')
         {{-- @foreach ($schedule as $s)
@@ -11,7 +11,7 @@
                     <h1 class="text-xl font-semibold">Data Review</h1>
                 </div>
                 <div class="relative flex items-center space-x-4">
-                    @include('partials.dropdownProfile')
+                    @include('partials.profile')
                 </div>
             </header>
 
@@ -61,16 +61,13 @@
                                 <th scope="col" class="px-6 py-3">
                                     Comment
                                 </th>
-                                <th scope="col" class="px-6 py-3 text-center">
-                                    Aksi
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($reviews as $review)
                                 <tr class="bg-white border-b">
                                     <td class="px-6 py-4">
-                                      {{ ($reviews->currentPage() - 1) * $reviews->perPage() + $loop->iteration }}
+                                      {{ $loop->iteration }}
                                     </td>
                                     <td class="px-6 py-4">
                                         {{ $review->doctor->name }}
@@ -84,26 +81,12 @@
                                     <td class="px-6 py-4">
                                         {{ $review->comment }}
                                     </td>
-                                    <td class="px-6 py-4">
-                                      <div class="flex items-center justify-center space-x-2">
-                                          <form class="doctor-delete-form" action="/admin/data-review/delete/{{ $review->id }}" method="POST">
-                                              @csrf
-                                              <button type="submit" class="grid w-8 bg-red-500 rounded-md place-items-center aspect-square hover:bg-red-600">
-                                                  <img src="/img/delete-icon.png" alt="delete-icon" />
-                                              </button>
-                                          </form>
-                                      </div>
-                                  </td>
+                                
                                 </tr>
                             @endforeach
                             
                         </tbody>
                     </table>
-                    <div class="mt-auto">
-                        <div class="w-full mt-10">
-                            {{ $reviews->links() }}
-                        </div>
-                    </div>
                 </div>  
             </div>
         </div>

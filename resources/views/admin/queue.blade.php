@@ -1,4 +1,4 @@
-@extends('layouts.layoutDashboardAdmin')
+@extends('layouts.layout_dashboard_admin')
 
 @section('content')
         {{-- @foreach ($schedule as $s)
@@ -11,7 +11,7 @@
                     <h1 class="text-xl font-semibold">Antrian Pemeriksaan</h1>
                 </div>
                 <div class="relative flex items-center space-x-4">
-                    @include('partials.dropdownProfile')
+                    @include('partials.profile')
                 </div>
             </header>
 
@@ -98,52 +98,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($reservations as $reservation)
-                                <tr class="border-b  {{  $reservation->status == 'completed' ? 'bg-green-100' : '' }}">
-                                    <td scope="row" class="py-4 pl-4 pr-6">
-                                        {{ $reservation->queue_number }}
-                                    </td>
-                                    <td scope="row" class="py-4 pl-2 pr-6">
-                                        {{ $reservation->patient->name }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        {{ $reservation->patient->email }}
-                                    </td>
-                                    <td class="px-6 py-4 text-center">
-                                        {{ $reservation->patient->gender }}
-                                    </td>
-                                    <td class="px-6 py-4 text-center">
-                                        {{ $reservation->status }}
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center justify-center space-x-2">
-                                            <form class="flex space-x-2" action="/admin/antrian-pemeriksaan/complete?id={{ $reservation->id }}" method="post">
-                                                @csrf
-                                                <button
-                                                    {{  $reservation->status == 'completed' ? 'disabled' : '' }}
-                                                    type="submit"
-                                                    class="grid w-8 rounded-md place-items-center aspect-square disabled:opacity-50 hover:opacity-90">
-                                                    <img src="/img/antrian-complete.png" alt="check-icon" />
-                                                </button>
-                                                <a
-                                                    
-                                                    href="/admin/antrian-pemeriksaan/hasil-pemeriksaan?id={{ $reservation->id }}"
-                                                    class="{{  $reservation->status != 'completed' ? 'pointer-events-none opacity-40' : '' }} grid w-8 transition-all duration-150 rounded-md place-items-center aspect-square hover:opacity-70">
-                                                    <img src="/img/buat-laporan.png" alt="delete-icon" />
-                                                </a>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                            
+                            @if($reservations == [])
+                                    <tr>
+                                        <td colspan="6" class="px-6 py-4 text-center">Tidak ada antrian</td>
+                                    </tr>
+                                @else
+                                    @foreach ($reservations as $reservation)
+                                        <tr class="border-b {{ $reservation->status == 'completed' ? 'bg-green-100' : '' }}">
+                                            <td scope="row" class="py-4 pl-4 pr-6">{{ $reservation->queue_number }}</td>
+                                            <td scope="row" class="py-4 pl-2 pr-6">{{ $reservation->patient->name }}</td>
+                                            <td class="px-6 py-4">{{ $reservation->patient->email }}</td>
+                                            <td class="px-6 py-4 text-center">{{ $reservation->patient->gender }}</td>
+                                            <td class="px-6 py-4 text-center">{{ $reservation->status }}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center justify-center space-x-2">
+                                                    <form class="flex space-x-2" action="/admin/antrian-pemeriksaan/complete?id={{ $reservation->id }}" method="post">
+                                                        @csrf
+                                                        <button {{ $reservation->status == 'completed' ? 'disabled' : '' }} type="submit" class="grid w-8 rounded-md place-items-center aspect-square disabled:opacity-50 hover:opacity-90">
+                                                            <img src="/img/antrian-complete.png" alt="check-icon" />
+                                                        </button>
+                                                        <a href="/admin/antrian-pemeriksaan/hasil-pemeriksaan?id={{ $reservation->id }}" class="{{ $reservation->status != 'completed' ? 'pointer-events-none opacity-40' : '' }} grid w-8 transition-all duration-150 rounded-md place-items-center aspect-square hover:opacity-70">
+                                                            <img src="/img/buat-laporan.png" alt="delete-icon" />
+                                                        </a>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif 
                         </tbody>
                     </table>
-                    {{-- <div class="mt-auto">
-                        <div class="w-full mt-10">
-                            {{ $reservations->links() }}
-                        </div>
-                    </div> --}}
                 </div>  
             </div>
         </div>

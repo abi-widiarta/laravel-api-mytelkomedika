@@ -10,13 +10,9 @@ use Illuminate\Support\Facades\Http;
 class ReportController extends Controller
 {
     public function store(Request $request) {
-        // dd($request);
-
         try {
             // Mengambil token dari session atau tempat penyimpanan lainnya
             $token = $request->session()->get('token');
-
-            // dd($request->all());
 
             // Panggil API dengan token bearer
             $response = Http::withHeaders([
@@ -37,7 +33,7 @@ class ReportController extends Controller
             if ($response->successful() && $response['status'] === 'success') {
                 return redirect()->back()->withToastSuccess('Laporan berhasil dibuat!');
             } else {
-                return redirect()->back()->withErrors(['error' => $response['message']]);
+                return redirect()->back()->withErrors(['error' => '']);
             }
         } catch (\Exception $e) {
             // Tangani kesalahan jika terjadi

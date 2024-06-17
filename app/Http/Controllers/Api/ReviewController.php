@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 class ReviewController extends Controller
 {
     public function index(Request $request) {
-        $reviewsQuery = Review::query();
+        $reviewsQuery = Review::query()->with(["doctor"]);
 
         if ($request->has('poli')) {
             $poli = $request->poli;

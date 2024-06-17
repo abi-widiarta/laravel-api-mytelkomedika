@@ -95,8 +95,6 @@
                     </form>
                   </li>
               </ul>
-          
-              {{-- @include('partials.modalConfirmLogoutAdmin') --}}
           </div>
       </div>
   </aside>

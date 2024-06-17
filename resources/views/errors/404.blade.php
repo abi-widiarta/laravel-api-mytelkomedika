@@ -1,3 +1,3 @@
 <h1>
-  Setiap perjalanan dimulai dari satu langkah
+  404 - Not Found
 </h1>

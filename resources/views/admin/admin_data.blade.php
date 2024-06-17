@@ -1,4 +1,4 @@
-@extends('layouts.layoutDashboardAdmin')
+@extends('layouts.layout_dashboard_admin')
 
 @section('content')
         <div class="flex flex-col h-full">
@@ -8,23 +8,12 @@
                     <h1 class="text-xl font-semibold">Data Admin</h1>
                 </div>
                 <div class="relative flex items-center space-x-4">
-                    @include('partials.dropdownProfile')
+                    @include('partials.profile')
                 </div>
             </header>
 
             <div class="flex flex-col flex-1 w-full p-6 bg-white rounded-xl">
-                <h2 class="mb-8 text-lg font-semibold">Kelola Data Admin</h2>
-                <div class="flex justify-between mb-6">
-                    <a href="/admin/data-admin/create"
-                        class="bg-[#ED1C24] text-sm px-4 py-2 font-semibold text-white rounded-full transition duration-150 hover:opacity-70">
-                        Tambah Data
-                    </a>
-                    {{-- <div
-                        class="flex justify-between px-2 py-1 text-sm border-2 border-gray-300 rounded-md focus:border-gray-600">
-                        <input type="text" class="w-56" />
-                        <img class="w-5" src="/img/icon-search.svg" alt="">
-                    </div> --}}
-                </div>
+                <h2 class="mb-8 text-lg font-semibold">Data Admin</h2>
                 <div class="flex flex-col justify-between flex-1">
                     <table class="w-full text-sm text-left text-gray-500 rtl:text-right">
                         <thead class="text-xs text-gray-700 uppercase border-b">
@@ -37,9 +26,6 @@
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Email
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center">
-                                    Aksi
                                 </th>
                             </tr>
                         </thead>
@@ -55,31 +41,11 @@
                                     <td class="px-6 py-4">
                                         {{ $admin->email }}
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex items-center justify-center space-x-2">
-                                            <a  
-                                                href="/admin/data-admin/edit?id={{ $admin->id }}"
-                                                class="grid w-8 bg-gray-400 rounded-md place-items-center aspect-square hover:bg-gray-500">
-                                                <img src="/img/edit-icon.png" alt="edit-icon" />
-                                            </a>
-                                            <form class="doctor-delete-form" action="/admin/data-admin/delete?id={{ $admin->id }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="grid w-8 bg-red-500 rounded-md place-items-center aspect-square hover:bg-red-600">
-                                                    <img src="/img/delete-icon.png" alt="delete-icon" />
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
                                 </tr>
                             @endforeach
                             
                         </tbody>
                     </table>
-                    {{-- <div class="mt-auto">
-                        <div class="w-full mt-10">
-                            {{ $admins->links() }}
-                        </div>
-                    </div> --}}
                 </div>
             </div>
         </div>

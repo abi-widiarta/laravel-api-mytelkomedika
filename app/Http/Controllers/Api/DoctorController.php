@@ -179,8 +179,6 @@ class DoctorController extends Controller
     }
     
     public function showQueues(Request $request) {
-        // $request['tanggal_reservasi'] = "12/22/2023";
-
         $reservation = Reservation::with(['doctor','patient'])->whereHas('doctor', function ($subquery) use ($request) {
             $subquery->where('specialization', $request->poli);
             })
@@ -188,6 +186,7 @@ class DoctorController extends Controller
                 $originalDate = $request->tanggal_reservasi;
                 $carbonDate = Carbon::createFromFormat('m/d/Y', $originalDate);
                 $formattedDate = $carbonDate->format('Y-m-d');
+
                 $query->where('date', $formattedDate);
             })
             ->where('status', '!=', 'canceled')->get();
@@ -200,8 +199,8 @@ class DoctorController extends Controller
     }
     
     public function showReviews(Request $request) {
-        $reviewsQuery = Review::with(['doctor'])->whereHas('doctor', function ($query) {
-            $query->where('id', Auth::user()->id);
+        $reviewsQuery = Review::with(['doctor'])->whereHas('doctor', function  ($query) use ($request) {
+            $query->where('id', $request->id);
         });
     
         if ($request->has('rating')) {
@@ -209,7 +208,7 @@ class DoctorController extends Controller
             $reviewsQuery->where('rating',$rating);
         }
     
-        $reviews = $reviewsQuery->get();
+        $reviews = $reviewsQuery->latest()->get();
     
         return response()->json([
             'status' => 'success',

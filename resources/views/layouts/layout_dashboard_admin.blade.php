@@ -69,7 +69,7 @@
 <body>
     @include('sweetalert::alert', ['cdn' => "https://cdn.jsdelivr.net/npm/sweetalert2@9"])
     <main class="flex bg-[#F3FBFF] min-h-screen">
-        @include('partials.sidebarAdmin')
+        @include('partials.sidebar_admin')
 
         <section class="flex-1 px-8 py-6">
             @yield('content')

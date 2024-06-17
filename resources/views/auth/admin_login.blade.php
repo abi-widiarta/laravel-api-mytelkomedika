@@ -89,13 +89,6 @@
                         </div>
                         
                     </div>
-
-                    <div class="flex items-start mb-8">
-                        <p class="text-xs">
-                            Don't have account yet?
-                            <a href="/admin/register" class="text-[#ED1C24]">Register here!</a>
-                        </p>
-                    </div>
                     <button id="btn-login" type="submit"
                         class="text-white rounded-full bg-[#ED1C24] font-medium shadow-lg transition duration-200 hover:shadow-[#ED1C24]/50 shadow-[#ED1C24]/30 text-sm w-full sm:w-auto px-6 py-2.5 text-center active:opacity-50 active:translate-y-2 active:shadow-sm">
                         Log in

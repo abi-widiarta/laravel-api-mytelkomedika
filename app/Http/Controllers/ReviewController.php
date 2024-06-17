@@ -4,29 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 
 class ReviewController extends Controller
 {
     public function index(Request $request) {
-        $reviewsQuery = Review::query();
+        try {
+            // Mengambil token dari session atau dari tempat penyimpanan lainnya
+            $token = $request->session()->get('token');
 
-        if ($request->has('poli')) {
-            $poli = $request->poli;
-            $reviewsQuery->whereHas('doctor', function ($query) use ($poli) {
-                $query->where('specialization', $poli);
-            });
-        }
+            // Menyertakan token dalam header Authorization
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $token,
+            ])->get('http://127.0.0.1:8000/api/admin/data-review',[
+                'specialization' => $request->poli,
+                'rating' => $request->rating
 
-        if ($request->has('rating')) {
-            $rating = $request->rating;
-            $reviewsQuery->where('rating',$rating);
-        }
+            ]);
 
-        $reviews = $reviewsQuery->paginate(10)->withQueryString();
+            $data = $response->json();
+            $objectData = json_decode(json_encode($data));
 
-        return view('admin.review_data',["reviews" => $reviews]);
+            return view('admin.review_data',['reviews' => $objectData->data]);
+        } catch (\Exception $e) {
+            // Tangani kesalahan jika ada
+            return redirect()->back()->withErrors(['error' => 'Failed to retrieve data.']);
+        }      
     }
 
     public function destroy($id) {

@@ -41,7 +41,7 @@
                   </li>
                   <li><p class="mt-6 mb-2 ml-2 text-sm font-semibold text-[#151C48]/80">Account</p></li>
                   <li>
-                    <form class="form-logout" action="/doctor/logout" method="POST">
+                    <form class="form-logout" action="/dokter/logout" method="POST">
                         @csrf
                         <button type="submit" class="flex items-center justify-start px-4 py-4 space-x-3 rounded-xl">
                             <img class="z-10 w-5 aspect-square" src="/img/logout-icon.png" alt="logo" />
@@ -50,8 +50,6 @@
                     </form>
                   </li>
               </ul>
-          
-              {{-- @include('partials.modalConfirmLogoutAdmin') --}}
           </div>
       </div>
   </aside>
